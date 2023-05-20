@@ -1,1 +1,5 @@
 09:30:40	20-05-2023	1208b967-ee36-40d5-ba9e-a071ce30a336	Error: Not allowed by cors	GET	/	chrome-untrusted://new-tab-page
+19:36:53	20-05-2023	7ea3f656-d4fe-4e21-94ab-fc09ce1b1a36	ReferenceError: password is not defined	GET	/users	undefined
+19:41:37	20-05-2023	259778ca-c80c-4aea-953f-300b7face0ba	TypeError: User.findById(...).exex is not a function	POST	/users	undefined
+19:45:26	20-05-2023	1954b65e-fb2a-47a7-b0e3-bdaf8bbf227e	ReferenceError: password is not defined	GET	/users	undefined
+20:03:10	20-05-2023	6efe7a20-f967-4593-b0b6-96ceeb0a94ac	SyntaxError: Unexpected token } in JSON at position 110	POST	/users	undefined

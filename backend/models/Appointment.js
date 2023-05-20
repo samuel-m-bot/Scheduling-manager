@@ -3,10 +3,14 @@ const AutoIncrement = require('mongoose-sequence')(mongoose)
 
 const AppointmentSchema = new mongoose.Schema({
   user: {
-    name: {
+    firstName: {
       type: String,
       required: true
     },
+    surname: {
+        type: String,
+        required: true
+      },
     email: {
       type: String,
       required: true
