@@ -1,5 +1,6 @@
 const User = require('../models/Users')
 const Appointments = require('../models/Appointment')
+const Service = require('../models/Service');
 const asyncHandler = require('express-async-handler')
 const bcrypt = require('bcrypt')
 
@@ -48,6 +49,30 @@ const createNewUser = asyncHandler( async(req, res) => {
 //@desc Update a users
 //@route PATCH /users
 //@access Private
+const postAppointmentRequest =asyncHandler(async (req, res, next) => {
+    try {
+      const { employeeId, serviceId, appointmentTime } = req.body;
+      const userId = req.params.id;
+      const appointment = new Appointment({
+        user: userId,
+        employee: employeeId,
+        service: serviceId,
+        appointmentTime: new Date(appointmentTime),
+      });
+      const savedAppointment = await appointment.save();
+      await User.updateOne(
+        { _id: userId },
+        { $push: { appointments: savedAppointment._id } }
+      );
+      res.json(savedAppointment);
+    } catch (err) {
+      next(err);
+    }
+  })
+  
+//@desc Update a users
+//@route PATCH /users
+//@access Private
 const updateUser = asyncHandler( async(req, res) => {
     const {id, firstName, surname, email, password, role} = req.body
 
@@ -86,32 +111,59 @@ const updateUser = asyncHandler( async(req, res) => {
 //@desc Update a users
 //@route PATCH /users
 //@access Private
+function isOverlapping(newSlot, existingSlots) {
+    const newStart = new Date(newSlot.startTime);
+    const newEnd = new Date(newSlot.endTime);
+
+    for (let i = 0; i < existingSlots.length; i++) {
+        const existingStart = new Date(existingSlots[i].startTime);
+        const existingEnd = new Date(existingSlots[i].endTime);
+
+        // Overlapping occurs if the new slot starts before an existing slot ends and ends after the existing slot starts.
+        if (newStart < existingEnd && newEnd > existingStart) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+//@desc Update a employee availability
+//@route PATCH /users/id:/availability
+//@access Private
 const updateAvailability = asyncHandler(async (req, res) => {
-    const { availability } = req.body;
-  
     try {
-      // Check if user exists and is an employee
-      let user = await User.findOne({ _id: req.params.id });
-  
-      if (!user) {
-        return res.status(400).json({ msg: 'User not found' });
-      }
-  
-      if (user.role !== 'employee') {
-        return res.status(400).json({ msg: 'Only employees can update availability' });
-      }
-  
-      // Update the user's availability
-      user.availability = availability;
-  
-      // Save the updated user to the database
-      await user.save();
-  
-      res.json({ msg: 'Availability updated successfully', user });
-  
+        const { id } = req.params;
+        const { availability } = req.body;
+
+        // Retrieve the current availability
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+        
+        // Check each new slot for overlap
+        for (let i = 0; i < availability.length; i++) {
+            if (isOverlapping(availability[i], user.availability)) {
+                return res.status(400).send({ message: 'Timeslot overlaps with an existing timeslot' });
+            }
+        }
+        
+        // If no overlaps, add the new slots
+        await User.findByIdAndUpdate(
+            id, 
+            { $push: { availability: { $each: availability }}},
+            { new: true, runValidators: true, select: '-password' } // exclude password
+        );
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                user
+            }
+        });
     } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server error');
+        next(err);
     }
   })
 //@desc Delete a users
@@ -154,10 +206,107 @@ const deleteUser = asyncHandler( async(req, res) => {
       }
 })
 
+const deleteAvailability =asyncHandler( async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { availability } = req.body;
+
+        const user = await User.findByIdAndUpdate(
+            id, 
+            { $pull: { availability: { $in: availability }}},
+            { new: true, runValidators: true, select: '-password' } // exclude password
+        );
+
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                user
+            }
+        });
+    } catch (err) {
+        next(err);
+    }
+})
+
+
+const getAppointments =asyncHandler( async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.id).populate('appointments');
+        if (!user) {
+            return res.status(404).json({message: 'User not found'});
+        }
+        res.status(200).json(user.appointments);
+    } catch (error) {
+        next(error);
+    }
+})
+
+const createNewAppointmentRequest =asyncHandler( async (req, res, next) => {
+    try {
+        const { userId, employeeId, serviceId, appointmentTime } = req.body;
+        const employee = await User.findById(employeeId);
+    
+        const isAvailable = employee.availability.some(slot =>
+          slot.startTime <= appointmentTime && slot.endTime > appointmentTime
+        );
+    
+        if (!isAvailable) {
+          return res.status(400).json({ message: 'Selected time slot is not available.' });
+        }
+    
+        const newAppointment = await Appointment.create({
+          user: userId,
+          employee: employeeId,
+          service: serviceId,
+          appointmentTime
+        });
+    
+        await User.findByIdAndUpdate(userId, {
+          $push: { appointments: newAppointment._id }
+        });
+    
+        res.status(201).json(newAppointment);
+      } catch (error) {
+        next(error);
+      }
+})
+
+const cancelAppointmentRequest =asyncHandler( async (req, res, next) => {
+    try {
+        const { appointmentId } = req.body;
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({message: 'User not found'});
+        }
+
+        const appointmentIndex = user.appointments.indexOf(appointmentId);
+        if (appointmentIndex === -1) {
+            return res.status(404).json({message: 'Appointment not found in user\'s appointment list'});
+        }
+        user.appointments.splice(appointmentIndex, 1);
+        await user.save();
+
+        await Appointment.findByIdAndRemove(appointmentId);
+
+        res.status(200).json({message: 'Appointment cancelled'});
+    } catch (error) {
+        next(error);
+    }
+})
+
 module.exports = {
     getAllUsers,
     createNewUser,
+    postAppointmentRequest,
     updateUser,
     updateAvailability,
-    deleteUser
+    deleteUser,
+    deleteAvailability,
+    getAppointments,
+    createNewAppointmentRequest,
+    cancelAppointmentRequest
 }
