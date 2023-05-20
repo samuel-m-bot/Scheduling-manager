@@ -9,16 +9,11 @@ const errorHandler = require('./middleware/errorHandler')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const corsOptions = require('./config/corsOptions')
+const connectDB = require('./config/dbConn')
+const {logEvents} = require('./middleware/logger')
 
-// Replace <username>, <password>, and <your-db-name> with your own values
-const uri = process.env.MONGO_URI;
+connectDB()
 
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('Connected to Database');
-    // Add your routes and middleware here
-  })
-  .catch(err => console.error(err));
 app.use(express.json())
 app.use(logger)
 app.use(cors(corsOptions))
@@ -26,6 +21,7 @@ app.use(cookieParser)
 app.use('/', express.static(path.join(__dirname, 'public')))
 
 app.use('/', require('./routes/root'))
+app.use('/users', require('./routes/userRoutes'))
 
 app.all('*', (req,res) =>{
   res.status(404)
@@ -38,6 +34,14 @@ app.all('*', (req,res) =>{
   }
 })
 app.use(errorHandler)
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+mongoose.connection.once('open', () => {
+  console.log('Connected to MongoDB')
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  })
+})
+
+mongoose.connection.on('error', err => {
+  console.log(err)
+  logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`, 'mongoErrLog.log')
+})
