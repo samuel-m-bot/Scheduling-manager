@@ -1,4 +1,3 @@
 <h1>Scheduling manager website - MERN stack </h1>
-<br>
 <h2>Aim</h2>
 <p>The aim of this project is to develop a comprehensive website using the MERN stack, providing an intuitive interface for companies to efficiently manage their appointments. By implementing a user-friendly booking system, the website will empower customers to easily schedule services while enabling employees to access and book available time slots. Through the integration of advanced features, such as real-time notifications and synchronization, this platform will streamline appointment management for businesses, enhancing overall productivity and customer satisfaction </p>
