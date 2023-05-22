@@ -3,11 +3,30 @@ import {Link} from 'react-router-dom'
 const Public = () => {
     const content = (
         <section className="public">
-            <header>
-                <h1>Welcome to <span className="nowrap">Quick Fix repairs</span></h1>
+            <header className='public__header'>
+            <nav class="nav-bar">
+                <div class="nav-section left">
+                    <h1>Quick Fix</h1>
+                </div>
+                <div class="nav-section center">
+                    <a href="#about">About</a>
+                    <a href="#services">Services</a>
+                </div>
+                <div class="nav-section right">
+                    <select id="language-selector">
+                        <option value="english" selected>English</option>
+                        <option value="spanish">Español</option>
+                        <option value="french">Français</option>
+                    </select>
+                </div>
+            </nav>
             </header>
             <main className="public__main">
-                <p>Located in Stratford, Quick Fix repairs provides a trained staff ready to meet your car repair needs.</p>
+            <div className="image-text">
+                <h1>Automobile Repair Shop</h1>
+                <p>Located in Stratford, Quick Fix repairs provides a trained staff ready to meet your car repair needs. 
+                    Top automobile shop</p>
+            </div>
                 <address className="public__addr">
                 Quick Fix repairs<br />
                     555 Foo Drive<br />
