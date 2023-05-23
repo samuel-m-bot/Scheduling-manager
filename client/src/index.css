@@ -90,7 +90,7 @@ a {
 
 a,
 a:visited {
-  color: var(--LINK-COLOR);
+  color: #000;
 }
 
 a:hover,
@@ -150,21 +150,24 @@ a:focus-visible {
   color: #333;
 }
 .image-text {
-  background: url('./img/car_background.jpeg') no-repeat center center;
+  background: url('./img/repair_background.jpg') no-repeat center center;
   background-size: cover;
   position: relative;
-  height: 80vh; 
+  height: 55vh; 
   width: 80%;
   display: flex;
   flex-direction: column; 
   align-items: center; 
   justify-content: flex-start; 
-  color: #000; 
+  color: #FFF; 
   border-radius: 5px;
-  margin: 2rem auto; 
-  padding: 20px; 
+  margin-top: 2rem; 
+  padding-top: 1rem;
 }
 
+.image-text h1 {
+  font-size: 50px;
+}
 .image-text p {
   text-align: center;
   font-size: 24px;
@@ -172,6 +175,33 @@ a:focus-visible {
 }
 .public__addr {
   margin-top: 1em;
+}
+.public__service {
+  width: 80%; /* Adjust as needed */
+  margin: auto;
+  text-align: center; /* New line: centers the h1 text */
+  margin-top: 2rem;
+}
+
+.service__container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.service__item {
+  flex: 0 1 calc(50% - 20px); /* Adjust 20px as needed for the desired space between the items */
+  background: #CFD1DD; /* Change to desired background color */
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px; /* Adjust for desired space between rows */
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .service__item {
+    flex: 0 1 100%; /* Makes items take full width on small screens */
+  }
 }
 
 .welcome a::before {
@@ -184,7 +214,7 @@ a:focus-visible {
   position: sticky;
   top: 0;
   z-index: 1;
-  background-color: var(--BGCOLOR);
+  background-color: #083D77;
   padding: 0 0.5em;
   border-bottom: 1px solid var(--BORDER-COLOR);
 }
@@ -213,7 +243,7 @@ a:focus-visible {
   position: sticky;
   bottom: 0;
   z-index: 1;
-  background-color: var(--BGCOLOR);
+  background-color: #083D77;
   padding: 0.5em;
   border-top: 1px solid var(--BORDER-COLOR);
   display: flex;
