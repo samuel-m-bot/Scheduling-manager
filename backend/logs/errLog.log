@@ -3,3 +3,6 @@
 19:41:37	20-05-2023	259778ca-c80c-4aea-953f-300b7face0ba	TypeError: User.findById(...).exex is not a function	POST	/users	undefined
 19:45:26	20-05-2023	1954b65e-fb2a-47a7-b0e3-bdaf8bbf227e	ReferenceError: password is not defined	GET	/users	undefined
 20:03:10	20-05-2023	6efe7a20-f967-4593-b0b6-96ceeb0a94ac	SyntaxError: Unexpected token } in JSON at position 110	POST	/users	undefined
+20:27:56	28-05-2023	5a5bb568-84b8-4169-923a-322b12a20432	Error: Not allowed by cors	GET	/users	http://localhost:3000
+20:33:03	28-05-2023	3bf9a1ab-6b3e-438b-85f4-af89cbead61d	Error: Not allowed by cors	GET	/users	http://localhost:3000
+20:40:13	28-05-2023	e88de0ab-a231-4386-ad66-b043aec75648	Error: Not allowed by cors	GET	/users	http://localhost:3000

@@ -1,5 +1,5 @@
 const Appointment = require('../models/Appointment');
-const User = require('../models/User');
+const User = require('../models/Users');
 const Service = require('../models/Service');
 const asyncHandler = require('express-async-handler')
 

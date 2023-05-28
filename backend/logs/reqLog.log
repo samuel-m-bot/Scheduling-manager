@@ -47,3 +47,9 @@
 22:38:20	20-05-2023	4870d6fa-f731-4129-9f05-c98d7a3b0923	PATCH	/users/64692e519e1e4b03acd7fee0/availability	undefined
 22:38:59	20-05-2023	1216e004-027e-4d73-8b89-9f84287707a9	PATCH	/users/64692e519e1e4b03acd7fee0/availability	undefined
 22:39:09	20-05-2023	4a98100f-03b4-4eaf-b38f-772406ee8c97	GET	/users	undefined
+19:28:36	28-05-2023	fd1f8e5e-593e-4255-a9cb-90c3c76f7ae2	GET	/users	undefined
+20:27:56	28-05-2023	414fc774-7f2b-4471-887e-9abd1b761d37	GET	/users	http://localhost:3000
+20:33:03	28-05-2023	b6a4bebe-0f4e-4c53-8f3c-b5d4a5f7aa0a	GET	/users	http://localhost:3000
+20:40:13	28-05-2023	4dc7b6ed-b18a-4165-9b14-6910fd4faa05	GET	/users	http://localhost:3000
+20:41:05	28-05-2023	675f2b86-cafe-4cef-9a1d-4905e2427436	GET	/users	http://localhost:3000
+20:43:10	28-05-2023	da47878e-b7f4-4ac6-afc7-b326a36ebc64	GET	/users	http://localhost:3000

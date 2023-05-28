@@ -1,0 +1,54 @@
+import {
+    createSelector,
+    createEntitAdapter,
+    createEntityAdapter
+} from '@reduxjs/toolkit'
+import {apiSlice} from '../../app/api/apiSlice'
+
+const servicesAdapter = createEntityAdapter({})
+
+const initialState = servicesAdapter.getInitialState()
+const servicesApiSlice = apiSlice.injectEndpoints({
+    endpoints: builder =>({
+        getservicess: builder.query({
+            query: () => './servicess',
+            validateStatus: (response, result) =>{
+                return response.status === 200 && !results.isError
+            },
+            keepUnusedDataFor: 5,
+            transformResponse: responseData => {
+                const loadservicess = responseData.map(services => {
+                    services.id= services._id
+                    return services
+                });
+                return servicesAdapter.setAll(initialState, loadservicess)
+            },
+            providesTags: (result, error, arg) => {
+                if(result?ids) {
+                    return [
+                        {type: 'services', id: 'LIST'},
+                        ...result.ids.map(id =>({type: 'services', id}))
+                    ]
+                } else return [{type: 'services', id: 'LIST'}]
+            }
+        }),
+    }),
+})
+
+export const{
+    servicesGetservicesQuery,
+} = servicesApiSlice
+
+export const selectservicesResult = servicesApiSlice.endpoints.getservicess.select()
+
+const selectservicesData = createSelectore(
+    selectservicesResult,
+    servicesResult => servicesResult.data
+)
+
+export const{
+    selectAll: selectAllservicess,
+    selectById: selectservicesById,
+    selectIds: selectservicesIds
+} = servicesAdapter.getSelectors(state => selectservicesData(state) ??
+initialState)
