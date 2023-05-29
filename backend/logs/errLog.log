@@ -8,3 +8,4 @@
 20:40:13	28-05-2023	e88de0ab-a231-4386-ad66-b043aec75648	Error: Not allowed by cors	GET	/users	http://localhost:3000
 18:22:31	29-05-2023	8bf1356b-78ee-4e8a-9c1f-7d517e90b2fb	TypeError: User.findById(...).exex is not a function	PATCH	/users/646914b134e1735215368e73	undefined
 18:23:15	29-05-2023	d9572b25-12a0-4aa5-8d85-d234377bfc70	ReferenceError: updatedUser is not defined	PATCH	/users/646914b134e1735215368e73	undefined
+20:14:58	29-05-2023	07709555-878b-4d39-a3d6-0c0b6721a201	MongoServerSelectionError: getaddrinfo ENOTFOUND ac-j1gzyup-shard-00-02.h3icuge.mongodb.net	GET	/users	http://localhost:3000
