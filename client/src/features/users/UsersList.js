@@ -20,7 +20,6 @@ const UsersList = () => {
     }
 
     if (isSuccess) {
-        <h2>Passed test</h2>
         const { ids } = users
 
         const tableContent = ids?.length

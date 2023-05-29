@@ -1,8 +1,7 @@
 import {
     createSelector,
-    createEntitAdapter,
     createEntityAdapter
-} from '@reduxjs/toolkit'
+} from "@reduxjs/toolkit";
 import {apiSlice} from '../../app/api/apiSlice'
 
 const servicesAdapter = createEntityAdapter({})
@@ -10,21 +9,21 @@ const servicesAdapter = createEntityAdapter({})
 const initialState = servicesAdapter.getInitialState()
 const servicesApiSlice = apiSlice.injectEndpoints({
     endpoints: builder =>({
-        getservicess: builder.query({
-            query: () => './servicess',
+        getServices: builder.query({
+            query: () => './service',
             validateStatus: (response, result) =>{
-                return response.status === 200 && !results.isError
+                return response.status === 200 && !result.isError
             },
             keepUnusedDataFor: 5,
             transformResponse: responseData => {
-                const loadservicess = responseData.map(services => {
+                const loadServices = responseData.map(services => {
                     services.id= services._id
                     return services
                 });
-                return servicesAdapter.setAll(initialState, loadservicess)
+                return servicesAdapter.setAll(initialState, loadServices)
             },
             providesTags: (result, error, arg) => {
-                if(result?ids) {
+                if(result?.ids) {
                     return [
                         {type: 'services', id: 'LIST'},
                         ...result.ids.map(id =>({type: 'services', id}))
@@ -36,19 +35,19 @@ const servicesApiSlice = apiSlice.injectEndpoints({
 })
 
 export const{
-    servicesGetservicesQuery,
+    useGetServicesQuery,
 } = servicesApiSlice
 
-export const selectservicesResult = servicesApiSlice.endpoints.getservicess.select()
+export const selectServicesResult = servicesApiSlice.endpoints.getServices.select()
 
-const selectservicesData = createSelectore(
-    selectservicesResult,
+const selectServicesData = createSelector(
+    selectServicesResult,
     servicesResult => servicesResult.data
 )
 
 export const{
-    selectAll: selectAllservicess,
-    selectById: selectservicesById,
-    selectIds: selectservicesIds
-} = servicesAdapter.getSelectors(state => selectservicesData(state) ??
+    selectAll: selectAllServices,
+    selectById: selectServicesById,
+    selectIds: selectServicesIds
+} = servicesAdapter.getSelectors(state => selectServicesData(state) ??
 initialState)

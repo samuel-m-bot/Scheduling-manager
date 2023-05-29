@@ -10,6 +10,9 @@ const getAppointments =asyncHandler( async (req, res, next) => {
       .populate('user', ['firstName', 'surname', 'email'])
       .populate('employee', ['firstName', 'surname', 'email'])
       .populate('service', ['name', 'description', 'price', 'duration']);
+    if (!appointments?.length) {
+      return res.status(400).json({ message: 'No appointments found' })
+    }
     res.json(appointments);
   } catch (err) {
     next(err);

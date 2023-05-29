@@ -4,6 +4,9 @@ const asyncHandler = require('express-async-handler')
 const getAllServices =asyncHandler( async (req, res, next) => {
     try {
         const services = await Service.find()
+        if (!services?.length) {
+            return res.status(400).json({ message: 'No services found' })
+        }
         res.status(200).json(services)
     } catch (err) {
         next(err)

@@ -1,54 +1,57 @@
 import {
     createSelector,
-    createEntitAdapter,
     createEntityAdapter
-} from '@reduxjs/toolkit'
-import {apiSlice} from '../../app/api/apiSlice'
+} from "@reduxjs/toolkit";
+import { apiSlice } from "../../app/api/apiSlice"
 
 const appointmentsAdapter = createEntityAdapter({})
 
 const initialState = appointmentsAdapter.getInitialState()
-const appointmentsApiSlice = apiSlice.injectEndpoints({
-    endpoints: builder =>({
-        getappointmentss: builder.query({
-            query: () => './appointmentss',
-            validateStatus: (response, result) =>{
-                return response.status === 200 && !results.isError
+
+export const appointmentsApiSlice = apiSlice.injectEndpoints({
+    endpoints: builder => ({
+        getAppointments: builder.query({
+            query: () => '/appointment',
+            validateStatus: (response, result) => {
+                return response.status === 200 && !result.isError
             },
             keepUnusedDataFor: 5,
             transformResponse: responseData => {
-                const loadappointmentss = responseData.map(appointments => {
-                    appointments.id= appointments._id
-                    return appointments
+                const loadedAppointments = responseData.map(appointment => {
+                    appointment.id = appointment._id
+                    return appointment
                 });
-                return appointmentsAdapter.setAll(initialState, loadappointmentss)
+                return appointmentsAdapter.setAll(initialState, loadedAppointments)
             },
             providesTags: (result, error, arg) => {
-                if(result?ids) {
+                if (result?.ids) {
                     return [
-                        {type: 'appointments', id: 'LIST'},
-                        ...result.ids.map(id =>({type: 'appointments', id}))
+                        { type: 'Appointment', id: 'LIST' },
+                        ...result.ids.map(id => ({ type: 'Appointment', id }))
                     ]
-                } else return [{type: 'appointments', id: 'LIST'}]
+                } else return [{ type: 'Appointment', id: 'LIST' }]
             }
         }),
     }),
 })
 
-export const{
-    appointmentsGetappointmentsQuery,
+export const {
+    useGetAppointmentsQuery,
 } = appointmentsApiSlice
 
-export const selectappointmentsResult = appointmentsApiSlice.endpoints.getappointmentss.select()
+// returns the query result object
+export const selectAppointmentsResult = appointmentsApiSlice.endpoints.getAppointments.select()
 
-const selectappointmentsData = createSelectore(
-    selectappointmentsResult,
-    appointmentsResult => appointmentsResult.data
+// creates memoized selector
+const selectAppointmentsData = createSelector(
+    selectAppointmentsResult,
+    appointmentsResult => appointmentsResult.data // normalized state object with ids & entities
 )
 
-export const{
-    selectAll: selectAllappointmentss,
-    selectById: selectappointmentsById,
-    selectIds: selectappointmentsIds
-} = appointmentsAdapter.getSelectors(state => selectappointmentsData(state) ??
-initialState)
+//getSelectors creates these selectors and we rename them with aliases using destructuring
+export const {
+    selectAll: selectAllAppointments,
+    selectById: selectAppointmentById,
+    selectIds: selectAppointmentIds
+    // Pass in a selector that returns the users slice of state
+} = appointmentsAdapter.getSelectors(state => selectAppointmentsData(state) ?? initialState)
