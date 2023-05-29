@@ -9,7 +9,11 @@ const AppointmentsList = () => {
         isSuccess,
         isError,
         error
-    } = useGetAppointmentsQuery()
+    } = useGetAppointmentsQuery(undefined, {
+        pollingInterval: 60000,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true
+    })
 
     let content
 

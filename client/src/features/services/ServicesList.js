@@ -9,7 +9,11 @@ const ServicesList = () => {
       isSuccess,
       isError,
       error
-  } = useGetServicesQuery()
+  } = useGetServicesQuery(undefined, {
+    pollingInterval: 60000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true
+  })
 
   let content
 

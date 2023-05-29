@@ -76,11 +76,11 @@ const postAppointmentRequest =asyncHandler(async (req, res, next) => {
 const updateUser = asyncHandler( async(req, res) => {
     const {id, firstName, surname, email, password, role} = req.body
 
-    if(!firstName ||!surname || !email ||!password ||!role){
+    if(!firstName ||!surname || !email ||!role){
         return res.status(400).json({message: 'All fields are required'})
     }
 
-    const user = await User.findById(id).exex()
+    const user = await User.findById(id).exec()
 
     if(!user){
         return res.status(400).json({message: 'User not found'})
@@ -105,7 +105,7 @@ const updateUser = asyncHandler( async(req, res) => {
       }
     const updateUser = await user.save()
 
-    res.json({ message: `${updatedUser.firstName} updated` })
+    res.json({ message: `${updateUser.firstName} updated` })
 })
 
 //@desc Update a users

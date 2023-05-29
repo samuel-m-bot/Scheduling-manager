@@ -15,7 +15,6 @@ export const appointmentsApiSlice = apiSlice.injectEndpoints({
             validateStatus: (response, result) => {
                 return response.status === 200 && !result.isError
             },
-            keepUnusedDataFor: 5,
             transformResponse: responseData => {
                 const loadedAppointments = responseData.map(appointment => {
                     appointment.id = appointment._id
@@ -32,11 +31,48 @@ export const appointmentsApiSlice = apiSlice.injectEndpoints({
                 } else return [{ type: 'Appointment', id: 'LIST' }]
             }
         }),
+        addNewAppointment: builder.mutation({
+            query: initialAppointmentData => ({
+                url: '/service',
+                method: 'POST',
+                body: {
+                    ...initialAppointmentData,
+                }
+            }),
+            invalidatesTags: [
+                { type: 'User', id: "LIST"}
+            ]
+        }),
+        updateAppointment: builder.mutation({
+            query: initialAppointmentData => ({
+                url: '/service',
+                method: 'PATCH',
+                body: {
+                    ...initialAppointmentData,
+                }
+            }),
+            invalidatesTags: (result, error, arg) => [
+                { type: 'User', id: arg.id}
+            ]
+        }),
+        deleteAppointment: builder.mutation({
+            query: ({ id }) => ({
+                url: '/service',
+                method: 'DELETE',
+                body: { id }
+            }),
+            invalidatesTags: (result, error, arg) => [
+                { type: 'User', id: arg.id}
+            ]
+        })
     }),
 })
 
 export const {
     useGetAppointmentsQuery,
+    useAddNewAppointmentMutation,
+    useUpdateAppointmentMutation,
+    useDeleteAppointmentMutation
 } = appointmentsApiSlice
 
 // returns the query result object

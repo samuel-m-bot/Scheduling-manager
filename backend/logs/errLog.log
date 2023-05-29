@@ -6,3 +6,5 @@
 20:27:56	28-05-2023	5a5bb568-84b8-4169-923a-322b12a20432	Error: Not allowed by cors	GET	/users	http://localhost:3000
 20:33:03	28-05-2023	3bf9a1ab-6b3e-438b-85f4-af89cbead61d	Error: Not allowed by cors	GET	/users	http://localhost:3000
 20:40:13	28-05-2023	e88de0ab-a231-4386-ad66-b043aec75648	Error: Not allowed by cors	GET	/users	http://localhost:3000
+18:22:31	29-05-2023	8bf1356b-78ee-4e8a-9c1f-7d517e90b2fb	TypeError: User.findById(...).exex is not a function	PATCH	/users/646914b134e1735215368e73	undefined
+18:23:15	29-05-2023	d9572b25-12a0-4aa5-8d85-d234377bfc70	ReferenceError: updatedUser is not defined	PATCH	/users/646914b134e1735215368e73	undefined
