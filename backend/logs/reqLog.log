@@ -309,3 +309,11 @@
 22:30:36	29-05-2023	e5d06f7a-36e0-40c8-8d82-302c2c3c4f89	GET	/service	http://localhost:3000
 22:35:06	29-05-2023	330e8d48-4d37-4a95-9326-dde29f63f89d	GET	/service	http://localhost:3000
 22:35:16	29-05-2023	ded3d717-6b3f-47ae-b5af-ea2052a75998	GET	/appointment	http://localhost:3000
+14:51:25	02-06-2023	e2d0604c-44a7-41e2-8bba-bece3aa21904	POST	/users	undefined
+14:51:56	02-06-2023	a1585940-f50a-4c2e-82ce-798ecb1506f7	POST	/users	undefined
+14:52:52	02-06-2023	096e5a91-8840-408d-b042-4e4cf1c72e86	POST	/auth	undefined
+14:54:55	02-06-2023	c09b9ffb-f6c5-454e-a8fa-0421a487688c	GET	/refresh	undefined
+14:55:16	02-06-2023	f249e43e-c866-4a4f-a560-ffce8acfd69c	GET	/auth/refresh	undefined
+14:55:47	02-06-2023	d87e16b4-60b5-41ed-8203-61d301dededb	GET	/auth/refresh	undefined
+14:56:03	02-06-2023	b51cc7c7-d6d0-40a2-82e0-b7779016e232	GET	/auth/logout	undefined
+14:56:11	02-06-2023	d4f2ea00-77c6-4ad5-9248-68208f093fd7	POST	/auth/logout	undefined
