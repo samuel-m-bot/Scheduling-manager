@@ -13,28 +13,34 @@ const login = asyncHandler(async (req, res) => {
     const foundUser = await User.findOne({ email }).exec()
 
     if(!foundUser){
+        console.log("EMAIL")
         return res.status(401).json({ message: 'Unauthorized'})
     }
 
     const match = await bcrypt.compare(password, foundUser.password)
 
-    if(!match) return res.status(401).json({ message: 'Unauthorized'})
+    if(!match){
+        console.log("PASSWORD")
+        return res.status(401).json({ message: 'Unauthorized'})
+    }
 
     const accessToken = jwt.sign(
         {
-            "UserInfo": {
+            "UserInfo": { //name
                 "email": foundUser.email,
-                "roles": foundUser.roles
+                "role": foundUser.role,
+                "firstName": foundUser.firstName,
+                "surname": foundUser.surname
             }
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '10s'}
+        { expiresIn: '1h'}
     )
 
     const refreshToken = jwt.sign(
         { "email": foundUser.email},
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: '1d'}
+        { expiresIn: '5d'}
     )
 
     res.cookie('jwt', refreshToken, {
@@ -44,7 +50,7 @@ const login = asyncHandler(async (req, res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000
     })
 
-    res.json({ accessToken })
+    res.json({ accessToken, role: foundUser.role })
 })
 
 const refresh = asyncHandler(async (req, res) => {
@@ -68,7 +74,9 @@ const refresh = asyncHandler(async (req, res) => {
                 {
                     "UserInfo": {
                         "email": foundUser.email,
-                        "role": foundUser.role
+                        "role": foundUser.role,
+                        "firstName": foundUser.firstName,
+                        "surname": foundUser.surname
                     }
                 },
                 process.env.ACCESS_TOKEN_SECRET,

@@ -1,6 +1,10 @@
 import {Link} from 'react-router-dom'
+import useAuth from "../hooks/useAuth"
+import ServicesList from '../features/services/ServicesList'  // import ServicesList component
 
 const Public = () => {
+    const {  role } = useAuth()
+
     const content = (
         <section className="public">
             <header className='public__header'>
@@ -27,28 +31,14 @@ const Public = () => {
                 <p>Located in Canary Wharf, Quick Fix repairs provides a trained staff ready to meet your car repair needs. 
                     Top automobile shop</p>
             </div>
-            <div className='public__service'>
+            <div className='public__service' id='content"'>
                 <h1>Services</h1>
-                <div className='service__container'>
-                    <div className='service__item'>
-                        <h2>FULL CAR SERVICE</h2>
-                    </div>
-                    <div className='service__item'>
-                        <h2>Book MOT</h2>
-                    </div>
-                    <div className='service__item'>
-                        <h2>Air Conditioning</h2>
-                    </div>
-                    <div className='service__item'>
-                        <h2>Oil Change</h2>
-                    </div>
-                    <div className='service__item'>
-                        <h2>Alignment</h2>
-                    </div>
-                    <div className='service__item'>
-                        <h2>Brake Service</h2>
-                    </div>
-                </div>
+                {(role=='') && <Link to="/userLogin">
+                                    <button type="button">
+                                        Login to book a service
+                                    </button>
+                                </Link>}
+                                <ServicesList isPublic={true} />  {/* use ServicesList component */}
             </div>
             <div className='public__companyInfo'>
             <address className="public__addr">
@@ -62,10 +52,10 @@ const Public = () => {
             </div>
             </main>
             <footer>
-                <Link to="/login">Employee Login</Link>
+                <Link to="/employeeLogin">Employee Login</Link>
             </footer>
         </section>
-
+ 
     )
     return content
 }

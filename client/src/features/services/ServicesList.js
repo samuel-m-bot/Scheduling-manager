@@ -1,7 +1,7 @@
 import { useGetServicesQuery } from "./servicesApiSlice"
 import Services from './Services'
 
-const ServicesList = () => {
+const ServicesList = (isPublic) => {
 
   const {
       data: services,
@@ -9,7 +9,7 @@ const ServicesList = () => {
       isSuccess,
       isError,
       error
-  } = useGetServicesQuery(undefined, {
+  } = useGetServicesQuery('serviceList', {
     pollingInterval: 60000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true
@@ -27,13 +27,13 @@ const ServicesList = () => {
       const { ids } = services
 
       const boxContent = ids?.length
-          ? ids.map(serviceId => <Services key={serviceId} serviceId={serviceId} />)
+          ? ids.map(serviceId => <Services key={serviceId} serviceId={serviceId} isPublic={isPublic} />)
           : null
 
       content = (
-        <div className='public__service'>
-          {boxContent}
-        </div>
+          <div className='service__container'>
+            {boxContent}
+          </div>
       )
   }
 

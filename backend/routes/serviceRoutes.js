@@ -3,14 +3,20 @@ const router = express.Router()
 const serviceController = require('../controllers/serviceController')
 const verifyJWT = require('../middleware/verifyJWT')
 
-router.use(verifyJWT)
-
+// Public Routes
 router.route('/')
     .get(serviceController.getAllServices)
-    .post(serviceController.createNewService)
 
 router.route('/:id')
     .get(serviceController.getServiceById)
+
+// Private Routes
+//router.use(verifyJWT)
+
+router.route('/')
+    .post(serviceController.createNewService)
+
+router.route('/:id')
     .patch(serviceController.updateService)
     .delete(serviceController.deleteService)
 

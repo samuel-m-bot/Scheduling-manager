@@ -5,11 +5,11 @@ import { useNavigate, Link, useLocation } from 'react-router-dom'
 
 import { useSendLogoutMutation } from '../features/auth/authApiSlice'
 
-const COMPANY_REGEX = /^\/company(\/)?$/
+const HOME_REGEX = /^\/company(\/)?$/
 const NOTES_REGEX = /^\/company\/notes(\/)?$/
 const USERS_REGEX = /^\/company\/users(\/)?$/
 
-const CompanyHeader = () => {
+const HomeHeader = () => {
 
     const navigate = useNavigate()
     const { pathname } = useLocation()
@@ -29,9 +29,9 @@ const CompanyHeader = () => {
 
     if (isError) return <p>Error: {error.data?.message}</p>
 
-    let companyClass = null
-    if (!COMPANY_REGEX.test(pathname) && !NOTES_REGEX.test(pathname) && !USERS_REGEX.test(pathname)) {
-        companyClass = "company-header__container--small"
+    let homeClass = null
+    if (!HOME_REGEX.test(pathname) && !NOTES_REGEX.test(pathname) && !USERS_REGEX.test(pathname)) {
+        homeClass = "home-header__container--small"
     }
 
     const logoutButton = (
@@ -45,12 +45,12 @@ const CompanyHeader = () => {
     )
 
     const content = (
-        <header className="company-header">
-            <div className={`company-header__container ${companyClass}`}>
-                <Link to="/company">
-                    <h1 className="company-header__title">techNotes</h1>
+        <header className="home-header">
+            <div className={`home-header__container ${homeClass}`}>
+                <Link to="/home">
+                    <h1 className="home-header__title">techNotes</h1>
                 </Link>
-                <nav className="company-header__nav">
+                <nav className="home-header__nav">
                     {/* add more buttons later */}
                     {logoutButton}
                 </nav>
@@ -60,4 +60,4 @@ const CompanyHeader = () => {
 
     return content
 }
-export default CompanyHeader
+export default HomeHeader

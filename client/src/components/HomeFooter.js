@@ -3,20 +3,20 @@ import { faHouse } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate, useLocation } from 'react-router-dom'
 import useAuth from "../hooks/useAuth"
 
-const CompanyFooter = () => {
+const HomeFooter = () => {
 
     const { firstName, surname, status } = useAuth()
 
     const navigate = useNavigate()
     const { pathname } = useLocation()
 
-    const onGoHomeClicked = () => navigate('/company')
+    const onGoHomeClicked = () => navigate('/home')
 
     let goHomeButton = null
-    if (pathname !== '/company') {
+    if (pathname !== '/home') {
         goHomeButton = (
             <button
-                className="company-footer__button icon-button"
+                className="home-footer__button icon-button"
                 title="Home"
                 onClick={onGoHomeClicked}
             >
@@ -26,7 +26,7 @@ const CompanyFooter = () => {
     }
 
     const content = (
-        <footer className="company-footer">
+        <footer className="home-footer">
             {goHomeButton}
             <p>Current User: {firstName} {surname} </p>
             <p>Status: {status} </p>
@@ -34,4 +34,4 @@ const CompanyFooter = () => {
     )
     return content
 }
-export default CompanyFooter
+export default HomeFooter

@@ -1,20 +1,20 @@
 import {Link} from 'react-router-dom'
 import useAuth from "../../hooks/useAuth"
 
-const Welcome = () => {
+const WelcomeUser = () => {
     const date = new Date()
     const today = new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'long' }).format(date)
 
-    const { firstName, isAdmin } = useAuth()
+    const { firstName, surname, isAdmin } = useAuth()
 
     const content = (
         <section className="welcome">
 
             <p>{today}</p>
 
-            <h1>Welcome {firstName}!</h1>
+            <h1>Welcome {firstName} {surname}!</h1>
 
-            <p><Link to="/company/services">View available services </Link></p>
+            <p><Link to="/home/services">Book a Service </Link></p>
 
             <p><Link to="/company/appointments">View appointments</Link></p>
 
@@ -26,4 +26,4 @@ const Welcome = () => {
     return content
 }
 
-export default Welcome
+export default WelcomeUser
