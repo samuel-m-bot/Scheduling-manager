@@ -22,6 +22,7 @@ import UserLogin from './features/auth/UserLogin'
 import HomeLayout from './components/HomeLayout'
 import PrefetchServices from './features/auth/PrefetchServices'
 import WelcomeUser from './features/auth/WelcomeUser'
+import UpdateAvailability from './features/users/UpdateAvailability'
 
 const NotFound = () => (
   <div>
@@ -49,6 +50,7 @@ function App() {
                     <Route index element={<UsersList />} />
                     <Route path=":id" element={<EditUser />} />
                     <Route path="new" element={<NewUserForm />} />
+                    <Route path=":id/availability" element={<UpdateAvailability />} />
                   </Route>
 
                   <Route path='services'>

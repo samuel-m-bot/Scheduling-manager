@@ -5,7 +5,7 @@ const Welcome = () => {
     const date = new Date()
     const today = new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'long' }).format(date)
 
-    const { firstName, isAdmin } = useAuth()
+    const { firstName, isAdmin, id } = useAuth()
 
     const content = (
         <section className="welcome">
@@ -20,6 +20,7 @@ const Welcome = () => {
 
             {(isAdmin) && <p><Link to="/company/users">View User Settings</Link></p>}
 
+            <p><Link to={`/company/users/${id}/availability`}>Update availability</Link></p>
         </section>
     )
 

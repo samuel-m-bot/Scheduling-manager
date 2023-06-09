@@ -3,6 +3,7 @@ const Appointments = require('../models/Appointment')
 const Service = require('../models/Service');
 const asyncHandler = require('express-async-handler')
 const bcrypt = require('bcrypt')
+const { isSunday, isBefore, isAfter, setHours } = require('date-fns');
 
 //@desc Get all users
 //@route GET /users
@@ -133,39 +134,51 @@ function isOverlapping(newSlot, existingSlots) {
 //@access Private
 const updateAvailability = asyncHandler(async (req, res) => {
     try {
-        const { id } = req.params;
-        const { availability } = req.body;
-
-        // Retrieve the current availability
-        const user = await User.findById(id);
-        if (!user) {
-            return res.status(404).send({ message: 'User not found' });
+      const { id } = req.params;
+      const { availability } = req.body;
+  
+      // Retrieve the current availability
+      const user = await User.findById(id);
+      if (!user) {
+        return res.status(404).send({ message: 'User not found' });
+      }
+  
+      // Check each new slot for overlap and valid timing
+      for (let i = 0; i < availability.length; i++) {
+        const startTime = new Date(availability[i].startTime);
+        const endTime = new Date(availability[i].endTime);
+  
+        if (isOverlapping(availability[i], user.availability)) {
+          return res.status(400).send({ message: 'Timeslot overlaps with an existing timeslot' });
         }
-        
-        // Check each new slot for overlap
-        for (let i = 0; i < availability.length; i++) {
-            if (isOverlapping(availability[i], user.availability)) {
-                return res.status(400).send({ message: 'Timeslot overlaps with an existing timeslot' });
-            }
+  
+        if (isSunday(startTime)) {
+          return res.status(400).send({ message: 'Cannot book on a Sunday' });
         }
-        
-        // If no overlaps, add the new slots
-        await User.findByIdAndUpdate(
-            id, 
-            { $push: { availability: { $each: availability }}},
-            { new: true, runValidators: true, select: '-password' } // exclude password
-        );
-
-        res.status(200).json({
-            status: 'success',
-            data: {
-                user
-            }
-        });
+  
+        if (startTime.getHours() < 9 || endTime.getHours() > 17) {
+          return res.status(400).send({ message: 'Bookings can only be made from 9am to 5pm' });
+        }
+      }
+  
+      // If no overlaps and all timings are valid, add the new slots
+      await User.findByIdAndUpdate(
+        id, 
+        { $push: { availability: { $each: availability }}},
+        { new: true, runValidators: true, select: '-password' } // exclude password
+      );
+  
+      res.status(200).json({
+        status: 'success',
+        data: {
+          user
+        }
+      });
     } catch (err) {
-        next(err);
+      next(err);
     }
   })
+  
 //@desc Delete a users
 //@route DELETEjj /users
 //@access Private

@@ -64,7 +64,17 @@ export const usersApiSlice = apiSlice.injectEndpoints({
             invalidatesTags: (result, error, arg) => [
                 { type: 'User', id: arg.id}
             ]
-        })
+        }),
+        updateAvailability: builder.mutation({
+            query: ({ id, availability }) => ({
+                url: `/users/${id}/availability`,
+                method: 'PATCH',
+                body: { availability },
+            }),
+            invalidatesTags: (result, error, { id }) => [
+                { type: 'User', id }
+            ],
+        }),
     }),
 })
 
@@ -72,7 +82,8 @@ export const {
     useGetUsersQuery,
     useAddNewUserMutation,
     useUpdateUserMutation,
-    useDeleteUserMutation
+    useDeleteUserMutation,
+    useUpdateAvailabilityMutation, // <-- new mutation hook
 } = usersApiSlice
 
 // returns the query result object

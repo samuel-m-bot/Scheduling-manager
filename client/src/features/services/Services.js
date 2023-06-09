@@ -18,6 +18,7 @@ const Service = ({ serviceId, isPublic }) => {
     const navigate = useNavigate()
     const [date, setDate] = useState(new Date())
     const [timeSlots, setTimeSlots] = useState([])
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
 
     if (service) {
         const handleEdit = () => navigate(`/company/services/${serviceId}`)
@@ -33,6 +34,13 @@ const Service = ({ serviceId, isPublic }) => {
 
             const availableTimeslots = await getAvailableTimeslots(serviceId, newDate)
             setTimeSlots(availableTimeslots)
+        }
+        function formatTimeSlot(slot) {
+            return `${slot.startTime.toLocaleTimeString()} - ${slot.endTime.toLocaleTimeString()}`;
+        }
+
+        function handleTimeSlotClick(slot) {
+            setSelectedTimeSlot(slot);
         }
 
         return (
