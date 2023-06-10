@@ -8,13 +8,13 @@ import { Outlet } from 'react-router-dom';
 const Prefetch = () => {
     useEffect(() => {
         console.log('subscribing')
-        const services = store.dispatch(servicesApiSlice.endpoints.getServices.initiate())
+        //const services = store.dispatch(servicesApiSlice.endpoints.getServices.initiate())
         const appointments = store.dispatch(appointmentsApiSlice.endpoints.getServices.initiate())
         const users = store.dispatch(usersApiSlice.endpoints.getUsers.initiate())
 
         return () => {
             console.log('unsubscribing')
-            services.unsubscribe()
+            //services.unsubscribe()
             appointments.unsubscribe()
             users.unsubscribe()
         }

@@ -11,7 +11,7 @@ const initialState = servicesAdapter.getInitialState()
 export const servicesApiSlice = apiSlice.injectEndpoints({
     endpoints: builder =>({
         getServices: builder.query({
-            query: () => './service',
+            query: () => '/service',
             validateStatus: (response, result) =>{
                 return response.status === 200 && !result.isError
             },

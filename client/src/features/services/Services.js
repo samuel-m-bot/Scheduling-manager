@@ -12,7 +12,8 @@ const getAvailableTimeslots = async (serviceId, date) => {
     return response.json()
   }
 
-const Service = ({ serviceId, isPublic }) => {
+const Service = ({ serviceId, isEdit, isBook }) => {
+    console.log('Rendering Services component for serviceId:', serviceId);
     const service = useSelector(state => selectServicesById(state, serviceId))
 
     const navigate = useNavigate()
@@ -43,13 +44,14 @@ const Service = ({ serviceId, isPublic }) => {
             setSelectedTimeSlot(slot);
         }
 
+
         return (
             <div className='service__item'>
                 <h2>{service.name}</h2>
                 <p>{service.description}</p>
                 <p><b>{serviceDurationString}</b></p>
                 <p><b>{servicePriceString}</b></p>
-                {isPublic ? (
+                {isBook && (
                     <>
                     <DateTimePicker
                         onChange={handleDateChange}
@@ -62,7 +64,8 @@ const Service = ({ serviceId, isPublic }) => {
                         <button key={index} onClick={() => handleTimeSlotClick(slot)}>{formatTimeSlot(slot)}</button>
                     ))}
                     </>
-                ) : (
+                )}
+                {isEdit && (
                     <button className="icon-button table__button" onClick={handleEdit}>
                     <FontAwesomeIcon icon={faPenToSquare} />
                     </button>

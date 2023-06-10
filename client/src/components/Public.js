@@ -1,10 +1,16 @@
 import {Link} from 'react-router-dom'
 import useAuth from "../hooks/useAuth"
-import ServicesList from '../features/services/ServicesList'  // import ServicesList component
+import ServicesList from '../features/services/ServicesList'  
+import { useSelector } from 'react-redux';  
+import LoadingSpinner from './LoadingSpinner';
 
 const Public = () => {
     const {  role } = useAuth()
+    const isLoggingOut = useSelector((state) => state.auth.isLoggingOut);
 
+    if (isLoggingOut) {
+      return <LoadingSpinner />;
+    }
     const content = (
         <section className="public">
             <header className='public__header'>
@@ -38,7 +44,7 @@ const Public = () => {
                                         Login to book a service
                                     </button>
                                 </Link>}
-                                <ServicesList isPublic={true} />  {/* use ServicesList component */}
+                                <ServicesList isEdit={false} isBook={false} />  {/* use ServicesList component */}
             </div>
             <div className='public__companyInfo'>
             <address className="public__addr">

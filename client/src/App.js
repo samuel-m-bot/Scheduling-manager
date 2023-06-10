@@ -54,7 +54,7 @@ function App() {
                   </Route>
 
                   <Route path='services'>
-                    <Route index element={<ServicesList isPublic={false}/>} />
+                    <Route index element={<ServicesList isEdit={true} isBook={false}/>} />
                     <Route path=":id" element={<EditService />} />
                     <Route path="new" element={<NewService />} />
                   </Route>
@@ -74,7 +74,7 @@ function App() {
                   <Route index element={<WelcomeUser />} />
 
                   <Route path='services'>
-                    <Route index element={<ServicesList isPublic={true}/>} />
+                    <Route index element={<ServicesList isEdit={false} isBook={true}/>} />
                   </Route>
 
                 </Route>

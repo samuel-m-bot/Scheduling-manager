@@ -11,7 +11,7 @@ router.route('/:id')
     .get(serviceController.getServiceById)
 
 // Private Routes
-//router.use(verifyJWT)
+router.use(verifyJWT)
 
 router.route('/')
     .post(serviceController.createNewService)

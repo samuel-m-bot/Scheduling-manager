@@ -1,6 +1,7 @@
 import { apiSlice } from "../../app/api/apiSlice"
-import { logOut } from "./authSlice"
-import { setCredentials } from "./authSlice"
+import { setCredentials, logOutStart, logOutSuccess } from "./authSlice"
+import { setApiReset } from "../../app/store"
+import store from "../../app/store"
 
 export const authApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
@@ -18,12 +19,14 @@ export const authApiSlice = apiSlice.injectEndpoints({
             }),
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
-                    //const { data } = 
+                    dispatch(logOutStart()); // Start logging out process
+                    
                     await queryFulfilled
-                    //console.log(data)
-                    dispatch(logOut())
-                    setTimeout(() => {
-                        dispatch(apiSlice.util.resetApiState())
+                    
+                    setTimeout(async () => {
+                        await dispatch(apiSlice.util.resetApiState()) // Wait for api reset
+                        dispatch(logOutSuccess()); // End logging out process
+                        dispatch(setApiReset(true));
                     }, 1000)
                 } catch (err) {
                     console.log(err)
