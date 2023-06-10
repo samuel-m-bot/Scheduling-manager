@@ -23,6 +23,7 @@ import HomeLayout from './components/HomeLayout'
 import PrefetchServices from './features/auth/PrefetchServices'
 import WelcomeUser from './features/auth/WelcomeUser'
 import UpdateAvailability from './features/users/UpdateAvailability'
+import BookService from './features/appointments/BookService'
 
 const NotFound = () => (
   <div>
@@ -75,6 +76,7 @@ function App() {
 
                   <Route path='services'>
                     <Route index element={<ServicesList isEdit={false} isBook={true}/>} />
+                    <Route path=":id" element={<BookService />} />
                   </Route>
 
                 </Route>

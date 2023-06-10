@@ -75,7 +75,7 @@ const postAppointmentRequest =asyncHandler(async (req, res, next) => {
 //@route PATCH /users
 //@access Private
 const updateUser = asyncHandler( async(req, res) => {
-    const {id, firstName, surname, email, password, role} = req.body
+    const {id, firstName, surname, email, password, role, availability } = req.body
 
     if(!firstName ||!surname || !email ||!role){
         return res.status(400).json({message: 'All fields are required'})
@@ -104,6 +104,10 @@ const updateUser = asyncHandler( async(req, res) => {
         const salt = await bcrypt.genSalt(10);
         password = await bcrypt.hash(password, salt);
       }
+    if (availability){
+      user.availability = availability;
+      await user.save();
+    }
     const updateUser = await user.save()
 
     res.json({ message: `${updateUser.firstName} updated` })

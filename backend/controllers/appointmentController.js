@@ -34,52 +34,38 @@ const getAppointment =asyncHandler( async (req, res, next) => {
 
 // Create new appointment
 const createAppointment =asyncHandler( async (req, res, next) => {
-    try {
-        const { userId, employeeId, serviceId, appointmentTime } = req.body;
+  const { user, employee, service, appointmentTime } = req.body;
+  
+  // Check for overlap with existing appointments
+  const overlap = await Appointment.findOne({
+    employee: employee,
+    $or: [{
+      appointmentStartTime: {
+        $lte: appointmentTime,
+        $gt: appointmentTime
+      }
+    }, {
+      appointmentEndTime: {
+        $lt: appointmentTime,
+        $gte: appointmentTime
+      }
+    }]
+  });
 
-        // Retrieve the employee
-        const employee = await User.findById(employeeId);
+  if (overlap) {
+    return res.status(400).json({ error: 'Overlapping appointment' });
+  }
 
-        // Check the employee's availability
-        const appointmentDateTime = new Date(appointmentTime);
-        const isEmployeeAvailable = employee.availability.some(interval => {
-            const startTime = new Date(interval.startTime);
-            const endTime = new Date(interval.endTime);
+  // Create appointment
+  const appointment = await Appointment.create({ user, employee, service, appointmentTime });
 
-            // Check if the appointment time is within the employee's available time slot
-            return appointmentDateTime >= startTime && appointmentDateTime <= endTime;
-        });
+  // Update employee availability
+  await User.updateOne(
+    { _id: employee },
+    { $push: { availability: { startTime: appointment.appointmentStartTime, endTime: appointment.appointmentEndTime } } }
+  );
 
-        if (!isEmployeeAvailable) {
-            // If the employee is not available at the requested time, send an error response
-            return res.status(400).json({ message: "The employee is not available at the requested time." });
-        }
-
-        // If the employee is available, proceed with creating the appointment
-        const appointment = new Appointment({
-            user: userId,
-            employee: employeeId,
-            service: serviceId,
-            appointmentTime: appointmentDateTime,
-        });
-
-        // Save appointment
-        const savedAppointment = await appointment.save();
-
-        // Update user's and employee's appointments
-        await User.updateOne(
-            { _id: userId },
-            { $push: { appointments: savedAppointment._id } }
-        );
-        await User.updateOne(
-            { _id: employeeId },
-            { $push: { appointments: savedAppointment._id } }
-        );
-
-        res.json(savedAppointment);
-        } catch (err) {
-        next(err);
-    }
+  res.status(200).json(appointment);
 })
 
 // Update appointment
@@ -98,41 +84,126 @@ const updateAppointment =asyncHandler( async (req, res, next) => {
 
 // Delete appointment
 const deleteAppointment =asyncHandler( async (req, res, next) => {
-  try {
-    const deletedAppointment = await Appointment.findByIdAndDelete(req.params.id);
-    await User.updateOne(
-      { _id: deletedAppointment.user },
-      { $pull: { appointments: deletedAppointment._id } }
-    );
-    await User.updateOne(
-      { _id: deletedAppointment.employee },
-      { $pull: { appointments: deletedAppointment._id } }
-    );
-    res.json(deletedAppointment);
-  } catch (err) {
-    next(err);
+  const { id } = req.params;
+  
+  const appointment = await Appointment.findById(id);
+  if (!appointment) {
+    return res.status(404).json({ error: 'Appointment not found' });
   }
+  
+  // Remove corresponding availability
+  await User.updateOne(
+    { _id: appointment.employee },
+    { $pull: { availability: { startTime: appointment.appointmentStartTime, endTime: appointment.appointmentEndTime } } }
+  );
+
+  // Delete appointment
+  await Appointment.deleteOne({ _id: id });
+
+  res.status(200).json({ message: 'Appointment deleted' });
 })
 
 const getAvailableTimeslots =asyncHandler( async(req, res, next) => {
-    try {
-      const { employeeId, serviceId } = req.query;
-      const employee = await User.findById(employeeId);
-      const service = await Service.findById(serviceId);
-  
-      if (!employee || !service) {
-        return res.status(400).json({ message: 'Invalid employee or service ID.' });
+  try {
+    // Get the selected service's duration
+    const service = await Service.findById(req.params.serviceId);
+    const serviceDuration = service.duration;
+
+    const dateParam = new Date(req.params.date);
+    const nextDate = new Date(dateParam);
+    nextDate.setDate(nextDate.getDate() + 1);
+
+    const pipeline = [
+      { 
+        $match: { 
+          role: 'employee',
+          'availability.startTime': { $gte: dateParam, $lt: nextDate }
+        }
+      },
+      { 
+        $project: { 
+          _id: 1, 
+          availableSlots: {
+            $filter: {
+              input: "$availability",
+              as: "availability",
+              cond: {
+                $and: [
+                  { $gte: [ "$$availability.startTime", dateParam ] },
+                  { $lt: [ "$$availability.endTime", nextDate ] }
+                ]
+              }
+            }
+          }
+        }
+      },
+      { 
+        $lookup: {
+          from: 'appointments',
+          let: { employeeId: '$_id', availableSlots: '$availableSlots' },
+          pipeline: [
+            { 
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: [ '$employee', '$$employeeId' ] },
+                    { $gte: [ '$appointmentTime', dateParam ] },
+                    { $lt: [ '$appointmentTime', nextDate ] }
+                  ]
+                }
+              }
+            }
+          ],
+          as: 'bookedSlots'
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          availableSlots: {
+            $filter: {
+              input: "$availableSlots",
+              as: "slot",
+              cond: {
+                $not: {
+                  $in: [ "$$slot.startTime", "$bookedSlots.appointmentTime" ]
+                }
+              }
+            }
+          }
+        }
       }
-  
-      const availableTimeslots = employee.availability.map(slot => ({
-        startTime: slot.startTime,
-        endTime: new Date(slot.startTime.getTime() + service.duration * 60000)  // assumes duration is in minutes
-      }));
-  
-      res.json(availableTimeslots);
-    } catch (error) {
-      next(error);
-    }
+    ];
+
+    const result = await User.aggregate(pipeline);
+
+    // We still need to split each available interval into slots of 'serviceDuration' length
+    let availableSlots = [];
+
+    result.forEach(employee => {
+      employee.availableSlots.forEach(interval => {
+        let slotStart = new Date(interval.startTime);
+        let slotEnd = new Date(slotStart.getTime() + serviceDuration * 60000);
+
+        while(slotEnd <= interval.endTime) {
+          availableSlots.push({
+            employee: employee._id,
+            slotStart: slotStart,
+            slotEnd: slotEnd
+          });
+
+          slotStart = slotEnd;
+          slotEnd = new Date(slotStart.getTime() + serviceDuration * 60000);
+        }
+      });
+    });
+
+    res.status(200).json(availableSlots);
+  } catch(err) {
+    // Handle errors
+    console.log(err);
+    res.status(500).json({ error: 'Server error' });
+  }
   })
 module.exports = {
     getAppointments,

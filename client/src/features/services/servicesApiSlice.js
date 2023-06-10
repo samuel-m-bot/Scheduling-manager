@@ -40,7 +40,7 @@ export const servicesApiSlice = apiSlice.injectEndpoints({
                 }
             }),
             invalidatesTags: [
-                { type: 'User', id: "LIST"}
+                { type: 'services', id: "LIST"}
             ]
         }),
         updateService: builder.mutation({
@@ -52,7 +52,7 @@ export const servicesApiSlice = apiSlice.injectEndpoints({
                 }
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: 'User', id: arg.id}
+                { type: 'services', id: arg.id}
             ]
         }),
         deleteService: builder.mutation({
@@ -62,9 +62,20 @@ export const servicesApiSlice = apiSlice.injectEndpoints({
                 body: { id }
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: 'User', id: arg.id}
+                { type: 'services', id: arg.id}
             ]
-        })
+        }),
+        getServiceById: builder.query({
+            query: (id) => `/service/${id}`,
+            validateStatus: (response, result) => {
+              return response.status === 200 && !result.isError
+            },
+            transformResponse: (responseData) => {
+              responseData.id = responseData._id;
+              return responseData;
+            },
+            providesTags: (result, error, id) => [{ type: 'services', id }],
+        }),
     }),
 })
 
@@ -72,7 +83,8 @@ export const{
     useGetServicesQuery,
     useAddNewServiceMutation,
     useUpdateServiceMutation,
-    useDeleteServiceMutation
+    useDeleteServiceMutation,
+    useGetServiceByIdQuery
 } = servicesApiSlice
 
 export const selectServicesResult = servicesApiSlice.endpoints.getServices.select()

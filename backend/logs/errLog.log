@@ -9,3 +9,13 @@
 18:22:31	29-05-2023	8bf1356b-78ee-4e8a-9c1f-7d517e90b2fb	TypeError: User.findById(...).exex is not a function	PATCH	/users/646914b134e1735215368e73	undefined
 18:23:15	29-05-2023	d9572b25-12a0-4aa5-8d85-d234377bfc70	ReferenceError: updatedUser is not defined	PATCH	/users/646914b134e1735215368e73	undefined
 20:14:58	29-05-2023	07709555-878b-4d39-a3d6-0c0b6721a201	MongoServerSelectionError: getaddrinfo ENOTFOUND ac-j1gzyup-shard-00-02.h3icuge.mongodb.net	GET	/users	http://localhost:3000
+13:34:02	10-06-2023	59cac475-108d-4779-aa39-ff3572fd3965	CastError: Cast to ObjectId failed for value "timeslots" (type string) at path "_id" for model "Appointment"	GET	/appointment/timeslots	http://localhost:3000
+15:15:13	10-06-2023	1913cb92-a8de-4e59-ac9b-c2dccbd1e0cd	CastError: Cast to ObjectId failed for value "timeslots" (type string) at path "_id" for model "Appointment"	GET	/appointment/timeslots	http://localhost:3000
+15:16:15	10-06-2023	1cf6348d-c1ce-4a1b-a2ce-12d93b752452	CastError: Cast to ObjectId failed for value "timeslots" (type string) at path "_id" for model "Appointment"	GET	/appointment/timeslots	http://localhost:3000
+15:18:48	10-06-2023	1947f431-dc9c-4660-9415-ba02a765a827	CastError: Cast to ObjectId failed for value "timeslots" (type string) at path "_id" for model "Appointment"	GET	/appointment/timeslots	http://localhost:3000
+15:26:40	10-06-2023	0000d478-773d-4a23-8d3e-8b6c81e2df33	CastError: Cast to ObjectId failed for value "timeslots" (type string) at path "_id" for model "Appointment"	GET	/appointment/timeslots	http://localhost:3000
+15:26:52	10-06-2023	831ff0b1-4a3c-4e54-a909-e9869e47a0e1	CastError: Cast to ObjectId failed for value "timeslots" (type string) at path "_id" for model "Appointment"	GET	/appointment/timeslots	http://localhost:3000
+15:30:39	10-06-2023	f6ab95de-e048-4a46-8c88-4ef0a746dc09	CastError: Cast to ObjectId failed for value "timeslots" (type string) at path "_id" for model "Appointment"	GET	/appointment/timeslots	http://localhost:3000
+15:30:45	10-06-2023	071be69f-6ca0-42fd-9323-28789f4359be	CastError: Cast to ObjectId failed for value "timeslots" (type string) at path "_id" for model "Appointment"	GET	/appointment/timeslots	http://localhost:3000
+15:34:27	10-06-2023	50676f86-80e0-4289-8392-619e5fe338b4	CastError: Cast to ObjectId failed for value "timeslots" (type string) at path "_id" for model "Appointment"	GET	/appointment/timeslots	http://localhost:3000
+15:40:59	10-06-2023	90a946fb-0ea1-45ba-8403-548840bab1ab	CastError: Cast to ObjectId failed for value "timeslots" (type string) at path "_id" for model "Appointment"	GET	/appointment/timeslots	http://localhost:3000

@@ -33,7 +33,7 @@ export const appointmentsApiSlice = apiSlice.injectEndpoints({
         }),
         addNewAppointment: builder.mutation({
             query: initialAppointmentData => ({
-                url: '/service',
+                url: '/appointment',
                 method: 'POST',
                 body: {
                     ...initialAppointmentData,
@@ -45,7 +45,7 @@ export const appointmentsApiSlice = apiSlice.injectEndpoints({
         }),
         updateAppointment: builder.mutation({
             query: initialAppointmentData => ({
-                url: '/service',
+                url: '/appointment',
                 method: 'PATCH',
                 body: {
                     ...initialAppointmentData,
@@ -57,13 +57,27 @@ export const appointmentsApiSlice = apiSlice.injectEndpoints({
         }),
         deleteAppointment: builder.mutation({
             query: ({ id }) => ({
-                url: '/service',
+                url: '/appointment',
                 method: 'DELETE',
                 body: { id }
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: 'User', id: arg.id}
+                { type: 'Appointment', id: arg.id}
             ]
+        }),
+        getAvailableSlots: builder.query({
+            query: ({ serviceId, date }) => `/appointment/timeslots/${serviceId}/${date}`,
+            validateStatus: (response, result) => {
+              return response.status === 200 && !result.isError
+            },
+            providesTags: (result, error, arg) => {
+              if (result?.ids) {
+                return [
+                  { type: 'Appointment', id: 'LIST' },
+                  ...result.ids.map(id => ({ type: 'Service', id }))
+                ]
+              } else return [{ type: 'Appointment', id: 'LIST' }]
+            }
         })
     }),
 })
@@ -72,7 +86,8 @@ export const {
     useGetAppointmentsQuery,
     useAddNewAppointmentMutation,
     useUpdateAppointmentMutation,
-    useDeleteAppointmentMutation
+    useDeleteAppointmentMutation,
+    useGetAvailableSlotsQuery
 } = appointmentsApiSlice
 
 // returns the query result object

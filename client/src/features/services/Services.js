@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import DateTimePicker from 'react-datetime-picker'
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons"
+import { faPenToSquare, faCalendarDay } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -23,6 +23,7 @@ const Service = ({ serviceId, isEdit, isBook }) => {
 
     if (service) {
         const handleEdit = () => navigate(`/company/services/${serviceId}`)
+        const handleBook = () => navigate(`/home/services/${serviceId}`)
 
         const servicePriceString = `£${service.price.toFixed(2)}` // converts number to string with 2 decimal places and adds $ sign
 
@@ -52,18 +53,9 @@ const Service = ({ serviceId, isEdit, isBook }) => {
                 <p><b>{serviceDurationString}</b></p>
                 <p><b>{servicePriceString}</b></p>
                 {isBook && (
-                    <>
-                    <DateTimePicker
-                        onChange={handleDateChange}
-                        value={date}
-                        disableClock={true}
-                        minDate={new Date()} // Prevent past date selection
-                    />
-                    {/* Show available time slots */}
-                    {timeSlots.map((slot, index) => (
-                        <button key={index} onClick={() => handleTimeSlotClick(slot)}>{formatTimeSlot(slot)}</button>
-                    ))}
-                    </>
+                    <button className="icon-button table__button" onClick={handleBook}>
+                    <FontAwesomeIcon icon={faCalendarDay} />
+                    </button>
                 )}
                 {isEdit && (
                     <button className="icon-button table__button" onClick={handleEdit}>

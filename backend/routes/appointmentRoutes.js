@@ -16,7 +16,7 @@ router
   .patch(appointmentController.updateAppointment)
   .delete(appointmentController.deleteAppointment)
 
-  router.route('/timeslots')
+  router.route('/timeslots/:serviceId/:date')
   .get(appointmentController.getAvailableTimeslots)
 
 module.exports = router

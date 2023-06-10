@@ -22,7 +22,7 @@ const CompanyHeader = () => {
     }] = useSendLogoutMutation()
 
     useEffect(() => {
-        if (isSuccess) navigate('/')
+        if (isSuccess) navigate('/employeeLogin')
     }, [isSuccess, navigate])
 
     if (isLoading) return <p>Logging Out...</p>
