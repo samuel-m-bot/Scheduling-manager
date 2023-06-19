@@ -40,7 +40,7 @@ export const appointmentsApiSlice = apiSlice.injectEndpoints({
                 }
             }),
             invalidatesTags: [
-                { type: 'User', id: "LIST"}
+                { type: 'Appointment', id: "LIST"}
             ]
         }),
         updateAppointment: builder.mutation({

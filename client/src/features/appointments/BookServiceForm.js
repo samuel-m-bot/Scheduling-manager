@@ -7,12 +7,15 @@ import { Calendar } from 'react-date-range'
 import format from 'date-fns/format';
 import { eachDayOfInterval, isSunday, addMonths } from 'date-fns';
 import useAuth from '../../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 
 const BookServiceForm = ({service}) => {
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedDateSlots, setSelectedDateSlots] = useState(null);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const navigate = useNavigate();
   const {
     data: availableSlotsData,
     error,
@@ -23,15 +26,10 @@ const BookServiceForm = ({service}) => {
   })
   const { id } = useAuth()
   
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   const [serviceDuration, setServiceDuration] = useState(service.duration);
   const [calendar, setCalendar] = useState('')
   const refOne = useRef(null)
-
-  useEffect(() =>{
-    document.addEventListener("keydown", hideOnEscape, true)
-    document.addEventListener("click", hideOnClickOutside, true)
-  }, [])
 
   // useEffect(() => {
   //   // Set the service duration when the service data is fetched
@@ -40,11 +38,7 @@ const BookServiceForm = ({service}) => {
   //   }
   // }, [service]);
 
-  const hideOnEscape = (e) => {
-    if( e.key === "Escape") {
-        setOpen(false)
-    }
-  }
+
 const threeMonthsFromNow = addMonths(new Date(), 3);
 const allDates = eachDayOfInterval({
   start: new Date(),
@@ -52,18 +46,13 @@ const allDates = eachDayOfInterval({
 });
 const disabledDates = allDates.filter(date => isSunday(date));
 
-  const hideOnClickOutside = (e) => {
-    if (refOne.current && ! refOne.current.contains(e.target)){
-        setOpen(false)
-    }
-  }
   
 
 // Initialize query outside of useEffect
 console.log(service.id)
 
 useEffect(() => {
-  if (!selectedDate || !serviceDuration || isLoading || isError || !availableSlotsData) {
+  if (!selectedDate || isLoading || isError || !availableSlotsData) {
     return;
   }
 
@@ -80,25 +69,19 @@ useEffect(() => {
   };
 
   availableSlots.forEach(slot => {
-    const slotStart = new Date(slot.slotStart);
-    const slotEnd = new Date(slot.slotEnd);
+    const slotStart = format(new Date(slot.slotStart), "HH:mm");
+    const slotEnd = format(new Date(slot.slotEnd), "HH:mm");
 
-    for (let time = slotStart; time < slotEnd; time.setMinutes(time.getMinutes() + serviceDuration)) {
-      const end = new Date(time.getTime());
-      end.setMinutes(end.getMinutes() + serviceDuration);
-
-      if (end <= slotEnd) {
-        selectedDateSlots.slots.push({
-          start: format(time, "HH:mm"),
-          end: format(end, "HH:mm"),
-        });
-      }
-    }
+    selectedDateSlots.slots.push({
+      start: slotStart,
+      end: slotEnd,
+      employee: slot.employee, 
+    });
   });
 
   // Update the state with the slots of the selected date
   setSelectedDateSlots(selectedDateSlots);
-}, [selectedDate, serviceDuration, availableSlotsData, isLoading, isError]);
+}, [selectedDate, availableSlotsData, isLoading, isError]);
 
 // Adjust handleSelect
 const handleSelect = (date) => {
@@ -124,35 +107,44 @@ const handleSelect = (date) => {
   } else {
     content = (
     
-    <div className='calendarWrap'>
-        <input
-        value={ calendar }
-        readOnly
-        className="inputBox"
-        onClick={ () => setOpen(open => !open) }
-      />
+    <div className="container">
 
       <div ref={refOne}>
         {open && 
           <Calendar
-            date={ new Date() }
+            date={selectedDate}
             onChange = { handleSelect }
             className="calendarElement"
+            minDate={new Date()}
           />
         }
       </div>
       {selectedDateSlots && (
-        <div>
-          <h2>Available time slots for {selectedDateSlots.date}:</h2>
-          {selectedDateSlots.slots.map((slot, index) => (
-            <p key={index}>{slot.start} - {slot.end}</p>
-          ))}
-        </div>
+        selectedDateSlots.slots.length > 0 ? (
+          <div>
+            <h2 className="slots-header">Available time slots for {selectedDateSlots.date}:</h2>
+            <div className="time-slots-container">
+              {selectedDateSlots.slots.map((slot, index) => (
+                <div key={index} 
+                className={`slot-container ${selectedSlot && selectedSlot.start === slot.start && selectedSlot.end === slot.end ? 'selected' : ''}`}
+                  onClick={() => setSelectedSlot({...slot, date: selectedDateSlots.date})}>
+                  <div className="slot-item">{slot.start} - {slot.end}</div>
+                  {selectedSlot && selectedSlot.start === slot.start && selectedSlot.end === slot.end && 
+                  <button className="checkout-button"
+                    onClick={() => navigate('/home/services/checkout', { state: { slot: selectedSlot, service: service }})}
+                  >Checkout
+                  </button>}
+                </div>
+              ))
+              }
+            </div>
+          </div>
+        ) : (
+          <p>No available slots for selected date.</p>
+        )
       )}
-    </div>
-    );
-  }
-
+  </div>
+)}
   return content;
 };
 

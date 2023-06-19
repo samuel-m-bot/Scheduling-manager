@@ -48,19 +48,45 @@ const disabledDates = allDates.filter(date => isSunday(date));
         setOpen(false)
     }
   }
+function getHoursFromTimeString(timeString) {
+  const [hours] = timeString.split(':');
+  return parseInt(hours, 10);
+}
+
+function getMinutesFromTimeString(timeString) {
+  const [, minutes] = timeString.split(':');
+  return parseInt(minutes, 10);
+}
+
   const handleSubmit = async (event) => {
+
     event.preventDefault();
 
     const startDate = new Date(range[0].startDate);
     const endDate = new Date(range[0].endDate);
     const availability = [];
-
+  
     for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
-        availability.push({
-            startTime: new Date(d.toISOString().split('T')[0] + "T" + startTime + ":00Z"),
-            endTime: new Date(d.toISOString().split('T')[0] + "T" + endTime + ":00Z"),
-        });
-    }
+      const currentDate = new Date(d); // Create a new Date object for the current date
+  
+      // Extract the date part without the time
+      const currentDateWithoutTime = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+  
+      console.log(currentDateWithoutTime);
+  
+      const availabilityStartTime = new Date(currentDateWithoutTime);
+      availabilityStartTime.setHours(getHoursFromTimeString(startTime), getMinutesFromTimeString(startTime), 0, 0);
+  
+      const availabilityEndTime = new Date(currentDateWithoutTime);
+      availabilityEndTime.setHours(getHoursFromTimeString(endTime), getMinutesFromTimeString(endTime), 0, 0);
+  
+      availability.push({
+          startTime: availabilityStartTime,
+          endTime: availabilityEndTime,
+      });
+  }
+  
+  
 
     await updateAvailability({ id, availability });
 };
