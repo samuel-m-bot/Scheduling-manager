@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 const AppointmentSchema = new mongoose.Schema({
+  appointment: Number,
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -27,10 +27,22 @@ const AppointmentSchema = new mongoose.Schema({
   }
 });
 
-AppointmentSchema.plugin(AutoIncrement, {
-    inc_field: 'appointment',
-    id: 'appointmentNums',
-    start_seq: 200
+const CounterSchema = new mongoose.Schema({
+  _id: String,
+  seq: { type: Number, default: 0 }
+});
+
+const Counter = mongoose.model('Counter', CounterSchema);
+
+AppointmentSchema.pre('save', async function(next) {
+  var doc = this;
+  try {
+    const counter = await Counter.findByIdAndUpdate({_id: 'appointmentId'}, {$inc: { seq: 1}}, {new: true, upsert: true});
+    doc.appointment = counter.seq;
+    next();
+  } catch (error) {
+    return next(error);
+  }
 });
 
 module.exports = mongoose.model('Appointment', AppointmentSchema);

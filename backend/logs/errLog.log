@@ -20,3 +20,12 @@
 15:34:27	10-06-2023	50676f86-80e0-4289-8392-619e5fe338b4	CastError: Cast to ObjectId failed for value "timeslots" (type string) at path "_id" for model "Appointment"	GET	/appointment/timeslots	http://localhost:3000
 15:40:59	10-06-2023	90a946fb-0ea1-45ba-8403-548840bab1ab	CastError: Cast to ObjectId failed for value "timeslots" (type string) at path "_id" for model "Appointment"	GET	/appointment/timeslots	http://localhost:3000
 20:57:08	18-06-2023	d122a737-475d-428c-ab17-ac67bcafc259	ReferenceError: next is not defined	PATCH	/users/undefined/availability	http://localhost:3000
+20:36:57	20-06-2023	7231fd74-03c0-4068-a213-83c5ee741985	ValidationError: Appointment validation failed: endTime: Path `endTime` is required., startTime: Path `startTime` is required.	POST	/appointment	http://localhost:3000
+20:39:48	20-06-2023	e8fe8300-219b-411d-8e75-dfbc91e10a21	ValidationError: Appointment validation failed: endTime: Path `endTime` is required., startTime: Path `startTime` is required.	POST	/appointment	http://localhost:3000
+20:48:49	20-06-2023	55c84a23-e1a7-45d9-945b-020ec6c756a4	ValidationError: Appointment validation failed: endTime: Path `endTime` is required., startTime: Path `startTime` is required.	POST	/appointment	http://localhost:3000
+20:56:18	20-06-2023	4e6ad530-54cc-4cdc-88d7-1a85ca445433	ValidationError: Appointment validation failed: endTime: Path `endTime` is required., startTime: Path `startTime` is required.	POST	/appointment	http://localhost:3000
+20:57:33	20-06-2023	1be415f1-7a01-4c70-98ee-8b7a7ced00e9	ValidationError: Appointment validation failed: endTime: Path `endTime` is required., startTime: Path `startTime` is required.	POST	/appointment	http://localhost:3000
+20:57:52	20-06-2023	338a3481-94a3-40e2-9583-3fc24bb3aa8a	ValidationError: Appointment validation failed: endTime: Path `endTime` is required., startTime: Path `startTime` is required.	POST	/appointment	http://localhost:3000
+21:00:16	20-06-2023	64c92b82-1a49-4a1b-aeb4-8432fb62ba86	ValidationError: Appointment validation failed: endTime: Path `endTime` is required., startTime: Path `startTime` is required.	POST	/appointment	http://localhost:3000
+13:23:22	23-06-2023	7e7b7cc6-1f29-4aec-ba8d-4b31d911dbec	MongoServerSelectionError: getaddrinfo ENOTFOUND ac-j1gzyup-shard-00-01.h3icuge.mongodb.net	GET	/service	http://localhost:3000
+13:23:32	23-06-2023	b37018d4-1475-4294-a691-0d0505347342	MongoServerSelectionError: getaddrinfo ENOTFOUND ac-j1gzyup-shard-00-01.h3icuge.mongodb.net	GET	/service	http://localhost:3000

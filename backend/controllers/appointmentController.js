@@ -34,20 +34,20 @@ const getAppointment =asyncHandler( async (req, res, next) => {
 
 // Create new appointment
 const createAppointment =asyncHandler( async (req, res, next) => {
-  const { user, employee, service, appointmentTime } = req.body;
-  
-  // Check for overlap with existing appointments
+  const { user, employee, service, startTime, endTime } = req.body;
+
+  //Check for overlap with existing appointments
   const overlap = await Appointment.findOne({
     employee: employee,
     $or: [{
-      appointmentStartTime: {
-        $lte: appointmentTime,
-        $gt: appointmentTime
+      startTime: {
+        $lte: startTime,
+        $gt: startTime
       }
     }, {
-      appointmentEndTime: {
-        $lt: appointmentTime,
-        $gte: appointmentTime
+      endTime: {
+        $lt: endTime,
+        $gte: endTime
       }
     }]
   });
@@ -57,16 +57,20 @@ const createAppointment =asyncHandler( async (req, res, next) => {
   }
 
   // Create appointment
-  const appointment = await Appointment.create({ user, employee, service, appointmentTime });
+  console.log("Before await");
+  const appointment = await Appointment.create({ user, employee, service, startTime, endTime })
+  .catch(err => console.log(err))
+  console.log("After await")
 
-  // Update employee availability
+  //Update employee availability
   await User.updateOne(
     { _id: employee },
-    { $push: { availability: { startTime: appointment.appointmentStartTime, endTime: appointment.appointmentEndTime } } }
+    { $push: { availability: { startTime: startTime, endTime: endTime } } }
   );
 
   res.status(200).json(appointment);
 })
+
 
 // Update appointment
 const updateAppointment =asyncHandler( async (req, res, next) => {
@@ -205,11 +209,104 @@ const getAvailableTimeslots =asyncHandler( async(req, res, next) => {
     res.status(500).json({ error: 'Server error' });
   }
   })
+
+  const getAvailableEmployees = asyncHandler( async(req, res, next) => {
+    try {
+      // Get the selected service's duration
+      const service = await Service.findById(req.params.serviceId);
+      const serviceDuration = service.duration;
+  
+      const slotStartParam = new Date(req.params.slotStart);
+      const slotEndParam = new Date(req.params.slotEnd);
+  
+      const pipeline = [
+        { 
+          $match: { 
+            role: 'employee',
+            'availability.startTime': { $lte: slotStartParam },
+            'availability.endTime': { $gte: slotEndParam }
+          }
+        },
+        { 
+          $project: { 
+            _id: 1, 
+            availableSlots: {
+              $filter: {
+                input: "$availability",
+                as: "availability",
+                cond: {
+                  $and: [
+                    { $lte: [ "$$availability.startTime", slotStartParam ] },
+                    { $gte: [ "$$availability.endTime", slotEndParam ] }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        { 
+          $lookup: {
+            from: 'appointments',
+            let: { employeeId: '$_id', availableSlots: '$availableSlots' },
+            pipeline: [
+              { 
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: [ '$employee', '$$employeeId' ] },
+                      { $gte: [ '$appointmentTime', slotStartParam ] },
+                      { $lt: [ '$appointmentTime', slotEndParam ] }
+                    ]
+                  }
+                }
+              }
+            ],
+            as: 'bookedSlots'
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            availableSlots: {
+              $filter: {
+                input: "$availableSlots",
+                as: "slot",
+                cond: {
+                  $not: {
+                    $in: [ "$$slot.startTime", "$bookedSlots.appointmentTime" ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ];
+  
+      const result = await User.aggregate(pipeline);
+  
+      // Filter employees who have available slots
+      let availableEmployees = [];
+  
+      result.forEach(employee => {
+        if (employee.availableSlots.length > 0) {
+          availableEmployees.push(employee._id);
+        }
+      });
+  
+      res.status(200).json(availableEmployees);
+    } catch(err) {
+      // Handle errors
+      console.log(err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  })
+  
 module.exports = {
     getAppointments,
     getAppointment,
     createAppointment,
     updateAppointment,
     deleteAppointment,
-    getAvailableTimeslots
+    getAvailableTimeslots,
+    getAvailableEmployees
 }
