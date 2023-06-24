@@ -119,7 +119,7 @@ const handleSelect = (date) => {
           />
         }
       </div>
-      {selectedDateSlots && (
+      {selectedDateSlots && ( 
         selectedDateSlots.slots.length > 0 ? (
           <div>
             <h2 className="slots-header">Available time slots for {selectedDateSlots.date}:</h2>

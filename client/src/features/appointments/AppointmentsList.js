@@ -24,25 +24,25 @@ const AppointmentsList = () => {
     }
 
     if (isSuccess) {
-        const { ids } = appointments
+        const ids = appointments.map(appointment => appointment.id);
+        console.log(ids);
+        const tableContent = ids.length
+        ? ids.map(appointmentId => <Appointment key={appointmentId} appointmentId={appointmentId} />)
+        : null
 
-        const tableContent = ids?.length
-            ? ids.map(appointmentId => <Appointment key={appointmentId} appointmentId={appointmentId} />)
-            : null
 
         content = (
-            <table className="table table--users">
-                <thead className="table__thead">
+            <table className="appointments-table">
+                <thead className="appointments-table__head">
                     <tr>
-                        <th scope="col" className="table__th user__username">Time</th>
-                        <th scope="col" className="table__th user__roles">User</th>
-                        <th scope="col" className="table__th user__edit">Employee</th>
-                        <th scope="col" className="table__th user__edit">Service</th>
-                        <th scope="col" className="table__th user__edit">Employee</th>
-                        <th scope="col" className="table__th user__edit">Edit</th>
+                        <th className="appointments-table__heading appointments-table__heading--time">Time</th>
+                        <th className="appointments-table__heading appointments-table__heading--user">User</th>
+                        <th className="appointments-table__heading appointments-table__heading--employee">Employee</th>
+                        <th className="appointments-table__heading appointments-table__heading--service">Service</th>
+                        <th className="appointments-table__heading appointments-table__heading--edit">Edit</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="appointments-table__body">
                     {tableContent}
                 </tbody>
             </table>

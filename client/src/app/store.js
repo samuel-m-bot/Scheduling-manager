@@ -2,6 +2,7 @@ import {configureStore, createSlice} from '@reduxjs/toolkit'
 import {apiSlice} from './api/apiSlice'
 import { setupListeners } from "@reduxjs/toolkit/query"
 import authReducer from '../features/auth/authSlice'
+import { appointmentsReducer } from '../features/appointments/appointmentsApiSlice'
 
 const apiResetSlice = createSlice({
     name: 'apiReset',
@@ -14,15 +15,17 @@ const apiResetSlice = createSlice({
   export const { setApiReset } = apiResetSlice.actions;
   export default apiResetSlice.reducer;
 
-export const store = configureStore({
+  export const store = configureStore({
     reducer: {
         [apiSlice.reducerPath]: apiSlice.reducer,
         auth: authReducer,
-        apiReset: apiResetSlice.reducer
+        apiReset: apiResetSlice.reducer,
+        appointments: appointmentsReducer
     },
     middleware: getDefaultMiddleware =>
         getDefaultMiddleware().concat(apiSlice.middleware),
     devTools: true
 })
+
 
 setupListeners(store.dispatch)

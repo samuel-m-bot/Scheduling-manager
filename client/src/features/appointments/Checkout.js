@@ -6,26 +6,72 @@ import useAuth from '../../hooks/useAuth';
 const Checkout = () => {
   const location = useLocation();
   const { id } = useAuth()
-  const { slot, service } = location.state;
+  const { slot, service } = location.state || {};
 
   const [addNewAppointment, {
     isLoading,
     isSuccess,
     isError,
     error
-}] = useAddNewAppointmentMutation()
+  }] = useAddNewAppointmentMutation()
 
-  const handelSubmit = async() => {
-    await addNewAppointment({ id})
+  const handleCheckout = async () => {
+    const [day, month, year] = slot.date.split('-').map(Number);
+    const [hour, minute] = slot.start.split(':').map(Number);
+  
+    const startDate = new Date(year, month - 1, day, hour, minute);
+    const endDate = new Date(startDate.getTime() + service.duration * 60000); // convert minutes to ms
+  
+    const startTime = startDate.toISOString();
+    const endTime = endDate.toISOString();
+  
+    try {
+      await addNewAppointment({
+        user: id,
+        employee: slot.employee,
+        service: service.id,
+        startTime: startTime,
+        endTime: endTime,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  
+  
+
+  console.log("User ID: ", id);
+console.log("Slot: ", slot);
+console.log("Service: ", service);
+  // Check if the required data is available
+  if (!id || !slot || !service) {
+    return <p>Loading...</p>;
   }
-  console.log(slot.employee)
+
+  if(isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if(isError) {
+    return <p>Error: {error.message}</p>;
+  }
+
+  if(isSuccess) {
+    return (
+      <div>
+        <h1>Appointment Confirmed!</h1>
+        <p>You have booked the {service.name} service.</p>
+        <p>Your appointment is on {slot.date} from {slot.start} to {slot.end}.</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <h1>Checkout</h1>
       <p>You have selected the {service.name} service.</p>
       <p>Your appointment is on {slot.date} from {slot.start} to {slot.end}.</p>
-      <button onSubmit={handelSubmit}>CheckOut</button>
-      {/* You can add the rest of your checkout process here. */}
+      <button onClick={handleCheckout}>Checkout</button>
     </div>
   );
 };

@@ -83,7 +83,7 @@ export const {
     useAddNewUserMutation,
     useUpdateUserMutation,
     useDeleteUserMutation,
-    useUpdateAvailabilityMutation, // <-- new mutation hook
+    useUpdateAvailabilityMutation, 
 } = usersApiSlice
 
 // returns the query result object

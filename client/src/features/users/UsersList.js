@@ -29,6 +29,7 @@ const UsersList = () => {
         const tableContent = ids?.length
             ? ids.map(userId => <User key={userId} userId={userId} />)
             : null
+        console.log(tableContent)
 
         content = (
             <table className="table table--users">
