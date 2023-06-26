@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { useRef } from "react";
 import format from "date-fns/format";
+import parseISO from "date-fns/parseISO";
 import { Calendar } from "react-date-range";
 
 const EditAppointmentForm = ({ appointment }) => {
@@ -25,8 +26,10 @@ const EditAppointmentForm = ({ appointment }) => {
     appointment.service.duration
   );
   const [dateSelectionOpen, setDateSelectionOpen] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState(appointment.employee);
+  const [selectedEmployee, setSelectedEmployee] = useState(appointment.employee.surname +" "+ appointment.employee.firstName);
   const [showEmployeeSelect, setShowEmployeeSelect] = useState(false);
+  const [fetchEmployees, setFetchEmployees] = useState(false);
+
 
   const [updateAppointment, { isLoading, isSuccess, isError, error }] =
     useUpdateAppointmentMutation();
@@ -42,14 +45,16 @@ const EditAppointmentForm = ({ appointment }) => {
       }
     );
 
-  const { data: availableEmployeesData, isLoading: isEmployeeLoading, isError: isEmployeeError } =
-    useGetAvailableEmployeesQuery({
-      serviceId: appointment.service._id,
-      slotStart: selectedSlot.slotStart, // Changed from start to slotStart
-      slotEnd: selectedSlot.slotEnd // Changed from end to slotEnd
-    });
+    const { data: availableEmployeesData, isLoading: isEmployeeLoading, isError: isEmployeeError } =
+    useGetAvailableEmployeesQuery(
+      fetchEmployees ? {
+        slotStart: selectedSlot.slotStart,
+        slotEnd: selectedSlot.slotEnd 
+      } : null
+    );
 
-  console.log(appointment.service._id);
+
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -101,18 +106,21 @@ const EditAppointmentForm = ({ appointment }) => {
   };
 
   const changeEmployee = () => {
+    setFetchEmployees(true);
     setShowEmployeeSelect(true);
   };
+  
 
   const selectNewEmployee = () => {
     const employeeSelect = document.getElementById("employeeSelect");
     const selectedId = employeeSelect.value;
     const selectedEmployeeData = availableEmployeesData.find(
-      (employee) => employee._id === selectedId
+      (employee) => employee.employee === selectedId
     );
-    setSelectedEmployee(selectedEmployeeData);
+    setSelectedEmployee(`${selectedEmployeeData.fName} ${selectedEmployeeData.sName}`);
     setShowEmployeeSelect(false);
   };
+  
 
   let content;
 
@@ -130,32 +138,41 @@ const EditAppointmentForm = ({ appointment }) => {
     content = (
       <div className="container">
         <div>
-          <h2>Current Appointment Time:</h2>
+          <h2>Current Appointment Date and Time:</h2>
           {selectedDate ? (
             <p>{format(selectedDate, "dd-MM-yyyy HH:mm")}</p>
           ) : (
-            <p>Please select a new date for the appointment.</p>
+            <p>Date: {format(parseISO(appointment.startTime), "dd-MM-yyyy")}<br />
+            Time: {format(parseISO(appointment.startTime), "HH:mm")} - {format(parseISO(appointment.endTime), "HH:mm")}</p>
+            
           )}
           <button onClick={() => setDateSelectionOpen(true)}>Change Date</button>
           <div>
             <h2>Current Employee:</h2>
-            <p>{selectedEmployee.name}</p>
+            <p>{selectedEmployee}</p>
             <button onClick={() => changeEmployee()}>Change Employee</button>
           </div>
         </div>
-
-        {showEmployeeSelect && availableEmployeesData && (
+        {console.log(availableEmployeesData)}
+        {showEmployeeSelect && (
           <div>
-            <select id="employeeSelect">
-              {availableEmployeesData.map((employee, index) => (
-                <option key={index} value={employee._id}>
-                  {employee.name}
-                </option>
-              ))}
-            </select>
-            <button onClick={selectNewEmployee}>Select</button>
+            {availableEmployeesData && availableEmployeesData.length > 0 ? (
+              <div>
+                <select id="employeeSelect">
+                  {availableEmployeesData.map((employee, index) => (
+                    <option key={index} value={employee.employee}>
+                      {employee.fName} {employee.sName}
+                    </option>
+                  ))}
+                </select>
+                <button onClick={selectNewEmployee}>Select</button>
+              </div>
+            ) : (
+              <p>No other available employees</p>
+            )}
           </div>
         )}
+
 
         {dateSelectionOpen && (
           <Calendar

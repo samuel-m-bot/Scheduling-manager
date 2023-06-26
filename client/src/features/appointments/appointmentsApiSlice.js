@@ -56,12 +56,12 @@ export const appointmentsApiSlice = apiSlice.injectEndpoints({
       providesTags: ['Appointment', 'LIST'],
     }),
     getAvailableEmployees: builder.query({
-      query: ({ serviceId, slotStart, slotEnd }) => `/appointment/available-employees/${serviceId}/${slotStart}/${slotEnd}`,
+      query: ({ slotStart, slotEnd }) => `/appointment/available-employees/${slotStart}/${slotEnd}`,
       validateStatus: (response, result) => {
         return response.status === 200 && !result.isError;
       },
       providesTags: ['Appointment', 'LIST'],
-    }),    
+    }),
   }),
 })
 
