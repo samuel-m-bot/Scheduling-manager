@@ -210,96 +210,73 @@ const getAvailableTimeslots =asyncHandler( async(req, res, next) => {
   }
   })
 
-  const getAvailableEmployees = asyncHandler( async(req, res, next) => {
+  const getAvailableEmployees = asyncHandler(async (req, res, next) => {
     try {
-      // Get the selected service's duration
-      const service = await Service.findById(req.params.serviceId);
-      const serviceDuration = service.duration;
-  
       const slotStartParam = new Date(req.params.slotStart);
       const slotEndParam = new Date(req.params.slotEnd);
   
       const pipeline = [
-        { 
-          $match: { 
+        // Step 1: Find all employees who are available during the slot
+        {
+          $match: {
             role: 'employee',
-            'availability.startTime': { $lte: slotStartParam },
-            'availability.endTime': { $gte: slotEndParam }
-          }
+            availability: {
+              $elemMatch: {
+                startTime: { $lte: slotStartParam },
+                endTime: { $gte: slotEndParam },
+              },
+            },
+          },
         },
-        { 
-          $project: { 
-            _id: 1, 
-            availableSlots: {
-              $filter: {
-                input: "$availability",
-                as: "availability",
-                cond: {
-                  $and: [
-                    { $lte: [ "$$availability.startTime", slotStartParam ] },
-                    { $gte: [ "$$availability.endTime", slotEndParam ] }
-                  ]
-                }
-              }
-            }
-          }
-        },
-        { 
+        // Step 2: Perform a left outer join with the appointments collection to get overlapping appointments
+        {
           $lookup: {
             from: 'appointments',
-            let: { employeeId: '$_id', availableSlots: '$availableSlots' },
+            let: { employeeId: '$_id' },
             pipeline: [
-              { 
+              {
                 $match: {
                   $expr: {
                     $and: [
-                      { $eq: [ '$employee', '$$employeeId' ] },
-                      { $gte: [ '$appointmentTime', slotStartParam ] },
-                      { $lt: [ '$appointmentTime', slotEndParam ] }
-                    ]
-                  }
-                }
-              }
+                      { $eq: ['$employee', '$$employeeId'] },
+                      { $gte: ['$startTime', slotStartParam] },
+                      { $lte: ['$endTime', slotEndParam] },
+                    ],
+                  },
+                },
+              },
             ],
-            as: 'bookedSlots'
-          }
+            as: 'overlappingAppointments',
+          },
         },
+        // Step 3: Filter out employees who have overlapping appointments
+        {
+          $match: {
+            overlappingAppointments: { $size: 0 },
+          },
+        },
+        // Step 4: Project the desired fields
         {
           $project: {
             _id: 1,
-            availableSlots: {
-              $filter: {
-                input: "$availableSlots",
-                as: "slot",
-                cond: {
-                  $not: {
-                    $in: [ "$$slot.startTime", "$bookedSlots.appointmentTime" ]
-                  }
-                }
-              }
-            }
-          }
-        }
+            fName: '$firstName',
+            sName: '$surname',
+          },
+        },
       ];
   
-      const result = await User.aggregate(pipeline);
-  
-      // Filter employees who have available slots
-      let availableEmployees = [];
-  
-      result.forEach(employee => {
-        if (employee.availableSlots.length > 0) {
-          availableEmployees.push(employee._id);
-        }
-      });
+      const availableEmployees = await User.aggregate(pipeline);
   
       res.status(200).json(availableEmployees);
-    } catch(err) {
+    } catch (err) {
       // Handle errors
       console.log(err);
       res.status(500).json({ error: 'Server error' });
     }
-  })
+  });
+  
+  
+  
   
 module.exports = {
     getAppointments,

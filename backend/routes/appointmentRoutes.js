@@ -19,7 +19,7 @@ router
   router.route('/timeslots/:serviceId/:date')
   .get(appointmentController.getAvailableTimeslots)
 
-  router.route('/available-employees/:serviceId/:slotStart/:slotEnd')
-  .get(appointmentController.getAvailableEmployees)
+  router.route('/available-employees/:slotStart/:slotEnd')
+  .get(appointmentController.getAvailableEmployees);
 
 module.exports = router
