@@ -16,16 +16,23 @@ import { Calendar } from "react-date-range";
 const EditAppointmentForm = ({ appointment }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedDateSlots, setSelectedDateSlots] = useState();
+  const [clickedSlot, setClickedSlot] = useState(null);
+  const [initialDate, setInitialDate] = useState(format(parseISO(appointment.startTime), 'dd-MM-yyyy'))
+  const [initialEmployee, setInitialEmployee] = useState(appointment.employee.surname +" "+ appointment.employee.firstName)
   const [selectedSlot, setSelectedSlot] = useState({
+    date: format(parseISO(appointment.startTime), 'dd-MM-yyyy'),
     slotStart: appointment.startTime,
-    slotEnd: appointment.endTime
+    slotEnd: appointment.endTime,
   });
+  
+  
   const refOne = useRef(null);
   const [open, setOpen] = useState(true);
   const [serviceDuration, setServiceDuration] = useState(
     appointment.service.duration
   );
   const [dateSelectionOpen, setDateSelectionOpen] = useState(false);
+  const [noSlots, setNoSlots] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(appointment.employee.surname +" "+ appointment.employee.firstName);
   const [showEmployeeSelect, setShowEmployeeSelect] = useState(false);
   const [fetchEmployees, setFetchEmployees] = useState(false);
@@ -114,12 +121,37 @@ const EditAppointmentForm = ({ appointment }) => {
   const selectNewEmployee = () => {
     const employeeSelect = document.getElementById("employeeSelect");
     const selectedId = employeeSelect.value;
+    console.log(selectedId);
     const selectedEmployeeData = availableEmployeesData.find(
-      (employee) => employee.employee === selectedId
+      (employee) => employee._id === selectedId
     );
-    setSelectedEmployee(`${selectedEmployeeData.fName} ${selectedEmployeeData.sName}`);
+    if (selectedEmployeeData) {
+      setSelectedEmployee(`${selectedEmployeeData.fName} ${selectedEmployeeData.sName}`);
+    } else {
+      console.error(`No employee found with id ${selectedId}`);
+    }
     setShowEmployeeSelect(false);
-  };
+  }
+
+  const onSaveAppointmentClicked = async () => {
+    if (initialDate !== selectedSlot.date || initialEmployee !== selectedEmployee) {
+        await updateAppointment({
+            id: appointment._id, 
+            startTime: selectedSlot.slotStart,
+            endTime: selectedSlot.slotEnd, 
+            employee: selectedEmployee._id, // assuming selectedEmployee now has _id property
+            user: appointment.user._id, // assuming user's ID doesn't change
+            service: appointment.service._id, // assuming service ID doesn't change
+        })
+    }
+}
+
+const onDeleteAppointmentClicked = async () => {
+  if (window.confirm('Are you sure you want to delete this appointment?')) {
+    await deleteAppointment({id: appointment._id});
+  }
+}
+
   
 
   let content;
@@ -140,13 +172,16 @@ const EditAppointmentForm = ({ appointment }) => {
         <div>
           <h2>Current Appointment Date and Time:</h2>
           {selectedDate ? (
-            <p>{format(selectedDate, "dd-MM-yyyy HH:mm")}</p>
+            <p>{format(selectedDate, "dd/MM/yyyy HH:mm")}</p>
           ) : (
             <p>Date: {format(parseISO(appointment.startTime), "dd-MM-yyyy")}<br />
             Time: {format(parseISO(appointment.startTime), "HH:mm")} - {format(parseISO(appointment.endTime), "HH:mm")}</p>
             
           )}
-          <button onClick={() => setDateSelectionOpen(true)}>Change Date</button>
+          <button onClick={() => {
+            setDateSelectionOpen(true)
+          setNoSlots(true)}
+          }>Change Date</button>
           <div>
             <h2>Current Employee:</h2>
             <p>{selectedEmployee}</p>
@@ -160,7 +195,7 @@ const EditAppointmentForm = ({ appointment }) => {
               <div>
                 <select id="employeeSelect">
                   {availableEmployeesData.map((employee, index) => (
-                    <option key={index} value={employee.employee}>
+                    <option key={index} value={employee._id}>
                       {employee.fName} {employee.sName}
                     </option>
                   ))}
@@ -182,6 +217,7 @@ const EditAppointmentForm = ({ appointment }) => {
             minDate={new Date()}
           />
         )}
+        {console.log(dateSelectionOpen)}
         {selectedDateSlots && selectedDateSlots.slots.length > 0 ? (
           <div>
             <h2 className="slots-header">Available time slots for {selectedDateSlots.date}:</h2>
@@ -190,23 +226,36 @@ const EditAppointmentForm = ({ appointment }) => {
                 <div
                   key={index}
                   className={`slot-container ${
-                    selectedSlot && selectedSlot.start === slot.start && selectedSlot.end === slot.end ? "selected" : ""
+                    clickedSlot && clickedSlot.start === slot.start && clickedSlot.end === slot.end ? "selected" : ""
                   }`}
-                  onClick={() => setSelectedSlot({ ...slot, date: selectedDateSlots.date })}
+                  onClick={() => setClickedSlot(slot)}
                 >
                   <div className="slot-item">
                     {slot.start} - {slot.end}
                   </div>
-                  {selectedSlot && selectedSlot.start === slot.start && selectedSlot.end === slot.end && (
+                  {clickedSlot && clickedSlot.start === slot.start && clickedSlot.end === slot.end && (
                     <button
                       className="checkout-button"
-                      onClick={() =>
-                        navigate("/home/services/checkout", {
-                          state: { slot: selectedSlot, service: appointment.service }
-                        })
-                      }
+                      onClick={() => {
+                        // Convert date to format compatible with JavaScript Date constructor
+                        const dateParts = selectedDateSlots.date.split("-");
+                        const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+                        
+                        const slotDateAndStartTime = `${formattedDate}T${slot.start}:00`;
+                        const slotDateAndEndTime = `${formattedDate}T${slot.end}:00`;
+                    
+                        setSelectedSlot({
+                          date: selectedDateSlots.date,
+                          slotStart: new Date(slotDateAndStartTime).toISOString(),
+                          slotEnd: new Date(slotDateAndEndTime).toISOString(),
+                        });
+                    
+                        setSelectedDate(new Date(slotDateAndStartTime));
+                        setDateSelectionOpen(false);
+                        setNoSlots(false)
+                      }}
                     >
-                      Checkout
+                      Select
                     </button>
                   )}
                 </div>
@@ -214,12 +263,26 @@ const EditAppointmentForm = ({ appointment }) => {
             </div>
           </div>
         ) : (
-          <p>No available slots for selected date.</p>
+          noSlots && <p>No available slots for selected date.</p>
         )}
-      </div>
+        <button
+            title="Save"
+            onClick={onSaveAppointmentClicked}
+            disabled={initialDate === selectedSlot.date && initialEmployee === selectedEmployee}
+        >
+            <FontAwesomeIcon icon={faSave} />
+        </button>
+        <button
+          title="Delete"
+          onClick={onDeleteAppointmentClicked}
+        >
+          <FontAwesomeIcon icon={faTrashCan} />
+        </button>
+    </div>
     );
   }
 
+  
   return content;
 };
 

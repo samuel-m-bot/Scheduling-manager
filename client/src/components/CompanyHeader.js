@@ -48,7 +48,7 @@ const CompanyHeader = () => {
         <header className="company-header">
             <div className={`company-header__container ${companyClass}`}>
                 <Link to="/company">
-                    <h1 className="company-header__title">techNotes</h1>
+                    <h1 className="company-header__title">Quick Fix</h1>
                 </Link>
                 <nav className="company-header__nav">
                     {/* add more buttons later */}

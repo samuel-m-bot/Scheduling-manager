@@ -48,7 +48,7 @@ const HomeHeader = () => {
         <header className="home-header">
             <div className={`home-header__container ${homeClass}`}>
                 <Link to="/home">
-                    <h1 className="home-header__title">techNotes</h1>
+                    <h1 className="home-header__title">Quick Fix</h1>
                 </Link>
                 <nav className="home-header__nav">
                     {/* add more buttons later */}

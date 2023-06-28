@@ -1,7 +1,7 @@
 import { useGetAppointmentsQuery } from "./appointmentsApiSlice"
 import Appointment from './Appointments'
 
-const AppointmentsList = () => {
+const AppointmentsList = (isEdit) => {
 
     const {
         data: appointments,
@@ -27,7 +27,7 @@ const AppointmentsList = () => {
         const ids = appointments.map(appointment => appointment.id);
         console.log(ids);
         const tableContent = ids.length
-        ? ids.map(appointmentId => <Appointment key={appointmentId} appointmentId={appointmentId} />)
+        ? ids.map(appointmentId => <Appointment key={appointmentId} appointmentId={appointmentId} isEdit={isEdit} />)
         : null
 
 
@@ -39,7 +39,7 @@ const AppointmentsList = () => {
                         <th className="appointments-table__heading appointments-table__heading--user">User</th>
                         <th className="appointments-table__heading appointments-table__heading--employee">Employee</th>
                         <th className="appointments-table__heading appointments-table__heading--service">Service</th>
-                        <th className="appointments-table__heading appointments-table__heading--edit">Edit</th>
+                        {!isEdit && <th className="appointments-table__heading appointments-table__heading--edit">Edit</th>}
                     </tr>
                 </thead>
                 <tbody className="appointments-table__body">

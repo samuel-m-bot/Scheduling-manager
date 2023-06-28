@@ -40,7 +40,7 @@ export const appointmentsApiSlice = apiSlice.injectEndpoints({
     }),
     deleteAppointment: builder.mutation({
       query: ({ id }) => ({
-        url: '/appointment',
+        url: `/appointment/${id}`,
         method: 'DELETE',
         body: { id },
       }),

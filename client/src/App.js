@@ -62,7 +62,7 @@ function App() {
                   </Route>
 
                   <Route path='appointments'>
-                    <Route index element={<AppointmentsList />} />
+                    <Route index element={<AppointmentsList isEdit={true}/>} />
                     <Route path=":id" element={<EditAppointment />} />
                     <Route path="new" element={<NewAppointment />} />
                   </Route>
@@ -79,6 +79,10 @@ function App() {
                     <Route index element={<ServicesList isEdit={false} isBook={true}/>} />
                     <Route path=":id" element={<BookService />} />
                     <Route path="checkout" element={<Checkout />} />
+                  </Route>
+
+                  <Route path='appointments'>
+                    <Route index element={<AppointmentsList isEdit={false}/>} />
                   </Route>
 
                 </Route>

@@ -16,7 +16,7 @@ const WelcomeUser = () => {
 
             <p><Link to="/home/services">Book a Service </Link></p>
 
-            <p><Link to="/company/appointments">View appointments</Link></p>
+            <p><Link to="/home/appointments">View appointments</Link></p>
 
             {(isAdmin) && <p><Link to="/company/users">View User Settings</Link></p>}
 

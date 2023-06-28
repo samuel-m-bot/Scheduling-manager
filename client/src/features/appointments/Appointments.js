@@ -6,7 +6,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
 import { selectAppointmentById } from './appointmentsApiSlice'
 
-const Appointment= ({ appointmentId }) => {
+const Appointment= ({ appointmentId, isEdit}) => {
     // const state = useSelector(state => state)
     // console.log(state);
     // const adapterSelectors = appointmentsAdapter.getSelectors();
@@ -40,7 +40,7 @@ const Appointment= ({ appointmentId }) => {
 
     console.log(appointmentId)
     const appointment = useSelector(state => selectAppointmentById(state, appointmentId))
-    console.log(appointment)
+    console.log(isEdit)
       
 
     const navigate = useNavigate()
@@ -60,12 +60,14 @@ const Appointment= ({ appointmentId }) => {
                 <td className='appointments-table__cell appointments-table__cell--employee'>{appointment.employee.surname}</td>
                 <td className='appointments-table__cell appointments-table__cell--service'>{appointment.service.name}</td>
                 <td className='appointments-table__cell appointments-table__cell--edit'>
+                {!isEdit && (
                     <button
-                        className="icon-button appointments-table__button"
-                        onClick={handleEdit}
-                    >
-                        <FontAwesomeIcon icon={faPenToSquare} />
-                    </button>
+                    className="icon-button appointments-table__button"
+                    onClick={handleEdit}
+                >
+                    <FontAwesomeIcon icon={faPenToSquare} />
+                </button>
+                )}
                 </td>
             </tr>
         )
