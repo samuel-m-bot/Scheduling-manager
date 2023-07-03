@@ -2,10 +2,13 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAddNewAppointmentMutation } from './appointmentsApiSlice';
 import useAuth from '../../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 const Checkout = () => {
   const location = useLocation();
-  const { id } = useAuth()
+  const { id, firstName } = useAuth()
+  
+  const navigate = useNavigate()
   const { slot, service } = location.state || {};
 
   const [addNewAppointment, {
@@ -40,10 +43,7 @@ const Checkout = () => {
   
   
 
-  console.log("User ID: ", id);
-console.log("Slot: ", slot);
-console.log("Service: ", service);
-  // Check if the required data is available
+ 
   if (!id || !slot || !service) {
     return <p>Loading...</p>;
   }
@@ -62,6 +62,7 @@ console.log("Service: ", service);
         <h1>Appointment Confirmed!</h1>
         <p>You have booked the {service.name} service.</p>
         <p>Your appointment is on {slot.date} from {slot.start} to {slot.end}.</p>
+        <button onClick={() =>navigate('/home') }>Go back to home menu</button>
       </div>
     );
   }
