@@ -20,6 +20,7 @@ const User = ({ userId }) => {
 
         return (
             <tr className="table__row user">
+                <td className='table__cell'>{user.role}</td>
                 <td className='table__cell'>{user.firstName}</td>
                 <td className='table__cell'>{user.surname}</td>
                 <td className='table__cell'>

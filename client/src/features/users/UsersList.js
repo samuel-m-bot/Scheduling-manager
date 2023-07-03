@@ -35,6 +35,7 @@ const UsersList = () => {
             <table className="table table--users">
                 <thead className="table__thead">
                     <tr>
+                        <th scope="col" className="table__th user__username">Role</th>
                         <th scope="col" className="table__th user__username">First name</th>
                         <th scope="col" className="table__th user__roles">Surname</th>
                         <th scope="col" className="table__th user__edit">Edit</th>

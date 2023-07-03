@@ -7,6 +7,7 @@ import { addDays } from 'date-fns'
 import { DateRange } from 'react-date-range'
 import format from 'date-fns/format';
 import { eachDayOfInterval, isSunday, addMonths } from 'date-fns';
+import moment from 'moment-timezone';
 
 const UpdateAvailability = () => {
   const { id } = useParams();
@@ -62,33 +63,35 @@ function getMinutesFromTimeString(timeString) {
 
     event.preventDefault();
 
-    const startDate = new Date(range[0].startDate);
-    const endDate = new Date(range[0].endDate);
-    const availability = [];
-  
-    for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
-      const currentDate = new Date(d); // Create a new Date object for the current date
-  
-      // Extract the date part without the time
-      const currentDateWithoutTime = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-  
-      console.log(currentDateWithoutTime);
-  
-      const availabilityStartTime = new Date(currentDateWithoutTime);
-      availabilityStartTime.setHours(getHoursFromTimeString(startTime), getMinutesFromTimeString(startTime), 0, 0);
-  
-      const availabilityEndTime = new Date(currentDateWithoutTime);
-      availabilityEndTime.setHours(getHoursFromTimeString(endTime), getMinutesFromTimeString(endTime), 0, 0);
-  
-      availability.push({
-          startTime: availabilityStartTime,
-          endTime: availabilityEndTime,
-      });
-  }
-  
-  
+  const startDate = new Date(range[0].startDate);
+  const endDate = new Date(range[0].endDate);
+  const availability = [];
 
-    await updateAvailability({ id, availability });
+  for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
+    const currentDate = new Date(d); // Create a new Date object for the current date
+
+    // Extract the date part without the time
+    const currentDateWithoutTime = moment.tz(d, "Europe/London"); // Convert the date to London time zone using Moment Timezone
+
+    const availabilityStartTime = moment(currentDateWithoutTime)
+      .set('hour', getHoursFromTimeString(startTime))
+      .set('minute', getMinutesFromTimeString(startTime))
+      .toDate();
+
+    const availabilityEndTime = moment(currentDateWithoutTime)
+      .set('hour', getHoursFromTimeString(endTime))
+      .set('minute', getMinutesFromTimeString(endTime))
+      .toDate();
+
+    availability.push({
+        startTime: availabilityStartTime,
+        endTime: availabilityEndTime,
+    });
+  }
+
+  // ... other code ...
+
+  await updateAvailability({ id, availability });
 };
 
   let content;
