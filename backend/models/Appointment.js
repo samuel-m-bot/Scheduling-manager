@@ -24,7 +24,16 @@ const AppointmentSchema = new mongoose.Schema({
   endTime: {
     type: Date,
     required: true
-  }
+  },
+  status: {
+    type: String,
+    enum: ['open', 'completed', 'cancelled'],
+    default: 'open'
+  },
+  outcome: {
+    type: String,
+    default: ''
+  },
 });
 
 const CounterSchema = new mongoose.Schema({

@@ -27,7 +27,7 @@ const getAllUsers = asyncHandler( async(req, res)=> {
 const createNewUser = asyncHandler( async(req, res) => {
     const { firstName, surname, email, password, role } = req.body
 
-    if(!firstName ||!surname || !email ||!password ||!role){
+    if(!firstName ||!surname || !email ||!password){
         return res.status(400).json({message: 'All fields are required'})
     }
     const duplicate = await User.findOne({email}).lean().exec()
@@ -35,7 +35,9 @@ const createNewUser = asyncHandler( async(req, res) => {
         return res.status(409).json({message: 'User with email already exists'})
     }
     const hashedPwd = await bcrypt.hash(password, 10)
-    const userObject = {firstName, surname, email, "password": hashedPwd, role }
+    let userObject
+    if(!role) userObject = {firstName, surname, email, "password": hashedPwd }
+    else userObject = {firstName, surname, email, "password": hashedPwd, role }
 
     const user = await User.create(userObject)
 

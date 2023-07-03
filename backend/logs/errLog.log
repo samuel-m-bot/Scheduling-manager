@@ -29,3 +29,27 @@
 21:00:16	20-06-2023	64c92b82-1a49-4a1b-aeb4-8432fb62ba86	ValidationError: Appointment validation failed: endTime: Path `endTime` is required., startTime: Path `startTime` is required.	POST	/appointment	http://localhost:3000
 13:23:22	23-06-2023	7e7b7cc6-1f29-4aec-ba8d-4b31d911dbec	MongoServerSelectionError: getaddrinfo ENOTFOUND ac-j1gzyup-shard-00-01.h3icuge.mongodb.net	GET	/service	http://localhost:3000
 13:23:32	23-06-2023	b37018d4-1475-4294-a691-0d0505347342	MongoServerSelectionError: getaddrinfo ENOTFOUND ac-j1gzyup-shard-00-01.h3icuge.mongodb.net	GET	/service	http://localhost:3000
+17:48:24	01-07-2023	a5dd5dff-914e-42dd-b36d-ff554b9819b7	CastError: Cast to [ObjectId] failed for value "[\n' +
+  '  {\n' +
+  "    startTime: '2023-07-03T08:00:00.000Z',\n" +
+  "    endTime: '2023-07-03T09:00:00.000Z'\n" +
+  '  }\n' +
+  ']" (type string) at path "appointments.0" because of "CastError"	POST	/appointment	http://localhost:3000
+17:48:33	01-07-2023	896a18f3-b4a3-4bca-ac06-f8f08f97d645	CastError: Cast to [ObjectId] failed for value "[\n' +
+  '  {\n' +
+  "    startTime: '2023-07-03T08:00:00.000Z',\n" +
+  "    endTime: '2023-07-03T09:00:00.000Z'\n" +
+  '  }\n' +
+  ']" (type string) at path "appointments.0" because of "CastError"	POST	/appointment	http://localhost:3000
+17:48:44	01-07-2023	03e83fe4-1025-409f-85a3-a87e81993954	CastError: Cast to [ObjectId] failed for value "[\n' +
+  '  {\n' +
+  "    startTime: '2023-07-03T08:00:00.000Z',\n" +
+  "    endTime: '2023-07-03T09:00:00.000Z'\n" +
+  '  }\n' +
+  ']" (type string) at path "appointments.0" because of "CastError"	POST	/appointment	http://localhost:3000
+17:49:38	01-07-2023	da4ebbeb-3e21-408d-865f-35f3616c677c	CastError: Cast to [ObjectId] failed for value "[\n' +
+  '  {\n' +
+  "    startTime: '2023-07-03T08:00:00.000Z',\n" +
+  "    endTime: '2023-07-03T09:00:00.000Z'\n" +
+  '  }\n' +
+  ']" (type string) at path "appointments.0" because of "CastError"	POST	/appointment	http://localhost:3000

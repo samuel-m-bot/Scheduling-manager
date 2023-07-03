@@ -39,17 +39,28 @@ const createAppointment =asyncHandler( async (req, res, next) => {
   //Check for overlap with existing appointments
   const overlap = await Appointment.findOne({
     employee: employee,
-    $or: [{
-      startTime: {
-        $lte: startTime,
-        $gt: startTime
+    $or: [
+      {
+        startTime: {
+          $gte: startTime,
+          $lt: endTime
+        }
+      }, 
+      {
+        endTime: {
+          $gt: startTime,
+          $lte: endTime
+        }
+      },
+      {
+        startTime: {
+          $lte: startTime,
+        },
+        endTime: {
+          $gte: endTime
+        }
       }
-    }, {
-      endTime: {
-        $lt: endTime,
-        $gte: endTime
-      }
-    }]
+    ]
   });
 
   if (overlap) {
@@ -107,7 +118,7 @@ const deleteAppointment =asyncHandler( async (req, res, next) => {
   res.status(200).json({ message: 'Appointment deleted' });
 })
 
-const getAvailableTimeslots =asyncHandler( async(req, res, next) => {
+const getAvailableTimeslots = asyncHandler( async(req, res, next) => {
   try {
     // Get the selected service's duration
     const service = await Service.findById(req.params.serviceId);
@@ -117,98 +128,81 @@ const getAvailableTimeslots =asyncHandler( async(req, res, next) => {
     const nextDate = new Date(dateParam);
     nextDate.setDate(nextDate.getDate() + 1);
 
-    const pipeline = [
-      { 
-        $match: { 
-          role: 'employee',
-          'availability.startTime': { $gte: dateParam, $lt: nextDate }
-        }
-      },
-      { 
-        $project: { 
-          _id: 1, 
-          availableSlots: {
-            $filter: {
-              input: "$availability",
-              as: "availability",
-              cond: {
-                $and: [
-                  { $gte: [ "$$availability.startTime", dateParam ] },
-                  { $lt: [ "$$availability.endTime", nextDate ] }
-                ]
-              }
-            }
-          }
-        }
-      },
-      { 
-        $lookup: {
-          from: 'appointments',
-          let: { employeeId: '$_id', availableSlots: '$availableSlots' },
-          pipeline: [
-            { 
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: [ '$employee', '$$employeeId' ] },
-                    { $gte: [ '$appointmentTime', dateParam ] },
-                    { $lt: [ '$appointmentTime', nextDate ] }
-                  ]
-                }
-              }
-            }
-          ],
-          as: 'bookedSlots'
-        }
-      },
-      {
-        $project: {
-          _id: 1,
-          availableSlots: {
-            $filter: {
-              input: "$availableSlots",
-              as: "slot",
-              cond: {
-                $not: {
-                  $in: [ "$$slot.startTime", "$bookedSlots.appointmentTime" ]
-                }
-              }
-            }
-          }
-        }
-      }
-    ];
+    // Fetch the availability for all employees and all booked appointments within the date range
+    const employeeAvailability = await User.find({ role: 'employee' }).select('availability');
+    const bookedAppointments = await Appointment.find({ startTime: { $gte: dateParam, $lt: nextDate } });
 
-    const result = await User.aggregate(pipeline);
-
-    // We still need to split each available interval into slots of 'serviceDuration' length
+    console.log(bookedAppointments)
+    console.log(dateParam)
     let availableSlots = [];
 
-    result.forEach(employee => {
-      employee.availableSlots.forEach(interval => {
-        let slotStart = new Date(interval.startTime);
+    employeeAvailability.forEach(emp => {
+      emp.availability.forEach(slot => {
+    
+        // Create an array of potential slots within this employee's availability
+        let potentialSlots = [];
+        let slotStart = new Date(slot.startTime);
         let slotEnd = new Date(slotStart.getTime() + serviceDuration * 60000);
-
-        while(slotEnd <= interval.endTime) {
-          availableSlots.push({
-            employee: employee._id,
-            slotStart: slotStart,
-            slotEnd: slotEnd
+    
+        while (slotEnd <= slot.endTime) {
+          potentialSlots.push({
+            slotStart: new Date(slotStart),
+            slotEnd: new Date(slotEnd)
           });
-
-          slotStart = slotEnd;
+    
+          // Increase the start and end times by the serviceDuration
+          slotStart = new Date(slotStart.getTime() + serviceDuration * 60000);
           slotEnd = new Date(slotStart.getTime() + serviceDuration * 60000);
         }
+    
+        // For each potential slot, check if it overlaps with a booked appointment
+        potentialSlots.forEach(potentialSlot => {
+          const isSlotAvailable = bookedAppointments.every(app => {
+            let appStart = new Date(app.startTime);
+            let appEnd = new Date(app.endTime);
+    
+            // The slot is available if it doesn't overlap with this appointment
+            //console.log(potentialSlot.slotStart + potentialSlot.slotEnd)
+            return !(potentialSlot.slotStart < appEnd && potentialSlot.slotEnd > appStart);
+          });
+    
+          if (isSlotAvailable) {
+            availableSlots.push({
+              employee: emp._id,
+              slotStart: new Date(potentialSlot.slotStart),
+              slotEnd: new Date(potentialSlot.slotEnd)
+            });
+          }
+        });
       });
+    });    
+    
+
+    // Group the slots by their start and end times
+    const groupedSlots = {};
+    availableSlots.forEach(slot => {
+      const key = `${slot.slotStart}-${slot.slotEnd}`;
+      if (!groupedSlots[key]) {
+        groupedSlots[key] = [];
+      }
+      groupedSlots[key].push(slot);
     });
 
-    res.status(200).json(availableSlots);
+    // For each group of slots, pick one at random
+    const finalSlots = [];
+    Object.values(groupedSlots).forEach(slots => {
+      const randomIndex = Math.floor(Math.random() * slots.length);
+      finalSlots.push(slots[randomIndex]);
+    });
+
+    res.status(200).json(finalSlots);
   } catch(err) {
     // Handle errors
     console.log(err);
     res.status(500).json({ error: 'Server error' });
   }
-  })
+});
+
 
   const getAvailableEmployees = asyncHandler(async (req, res, next) => {
     try {
