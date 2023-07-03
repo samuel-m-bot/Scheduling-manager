@@ -25,6 +25,8 @@ import WelcomeUser from './features/auth/WelcomeUser'
 import UpdateAvailability from './features/users/UpdateAvailability'
 import BookService from './features/appointments/BookService'
 import Checkout from './features/appointments/Checkout'
+import CompleteAppointment from './features/appointments/CompleteAppointment'
+import RegisterUserForm from './features/users/RegisterUserForm'
 
 const NotFound = () => (
   <div>
@@ -41,6 +43,7 @@ function App() {
           <Route index element={<Public />} />
           <Route path='employeeLogin' element={<EmployeeLogin />} />
           <Route path='userLogin' element={<UserLogin />} />
+          <Route path='userRegister' element={<RegisterUserForm />} />
 
           <Route element={<PersistLogin />}>
             <Route element={<RequireAuth allowedRoles={[ROLES.admin, ROLES.employee]}/>}>
@@ -60,10 +63,11 @@ function App() {
                     <Route path=":id" element={<EditService />} />
                     <Route path="new" element={<NewService />} />
                   </Route>
-
+                  
                   <Route path='appointments'>
                     <Route index element={<AppointmentsList isEdit={true}/>} />
                     <Route path=":id" element={<EditAppointment />} />
+                    <Route path="complete/:id" element={<CompleteAppointment />} />
                     <Route path="new" element={<NewAppointment />} />
                   </Route>
 

@@ -34,6 +34,7 @@ const EditUserForm = ({ user }) => {
     const [password, setPassword] = useState('')
     const [validPassword, setValidPassword] = useState(false)
     const [role, setRole] = useState("employee")
+    const [deleteCompleted, setRegistrationCompleted] = useState(false)
 
     useEffect(() => {
         setValidFirstName(USER_REGEX.test(firstName))
@@ -80,6 +81,8 @@ const EditUserForm = ({ user }) => {
 
     const onDeleteUserClicked = async () => {
         await deleteUser({ id: user.id })
+        navigate('/company/users')
+        
     }
 
     const options = Object.values(ROLES).map(role => {

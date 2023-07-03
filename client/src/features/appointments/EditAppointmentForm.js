@@ -144,7 +144,7 @@ const EditAppointmentForm = ({ appointment }) => {
             service: appointment.service._id, // assuming service ID doesn't change
         })
     }
-}
+  }
 
 const onDeleteAppointmentClicked = async () => {
   if (window.confirm('Are you sure you want to delete this appointment?')) {

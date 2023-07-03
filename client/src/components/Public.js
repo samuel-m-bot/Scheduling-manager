@@ -44,6 +44,11 @@ const Public = () => {
                                         Login to book a service
                                     </button>
                                 </Link>}
+                                <Link to="/userRegister">
+                                    <button type="button">
+                                        Register to book a service
+                                    </button>
+                                </Link>
                                 <ServicesList isEdit={false} isBook={false} />  {/* use ServicesList component */}
             </div>
             <div className='public__companyInfo'>
