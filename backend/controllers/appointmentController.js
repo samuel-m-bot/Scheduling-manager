@@ -133,7 +133,6 @@ const getAvailableTimeslots = asyncHandler( async(req, res, next) => {
     const bookedAppointments = await Appointment.find({ startTime: { $gte: dateParam, $lt: nextDate } });
 
     console.log(bookedAppointments)
-    console.log(dateParam)
     let availableSlots = [];
 
     employeeAvailability.forEach(emp => {
@@ -160,12 +159,15 @@ const getAvailableTimeslots = asyncHandler( async(req, res, next) => {
           const isSlotAvailable = bookedAppointments.every(app => {
             let appStart = new Date(app.startTime);
             let appEnd = new Date(app.endTime);
-    
-            // The slot is available if it doesn't overlap with this appointment
-            //console.log(potentialSlot.slotStart + potentialSlot.slotEnd)
-            return !(potentialSlot.slotStart < appEnd && potentialSlot.slotEnd > appStart);
+        
+            // Check if the appointment overlaps with the potential slot and is for the same employee
+            if(potentialSlot.slotStart < appEnd && potentialSlot.slotEnd > appStart && app.employee.equals(emp._id)){
+              return false;  // If overlap and same employee, the slot is not available
+            }else{
+              return true;  // Otherwise, the slot is available
+            }
           });
-    
+        
           if (isSlotAvailable) {
             availableSlots.push({
               employee: emp._id,
@@ -174,6 +176,7 @@ const getAvailableTimeslots = asyncHandler( async(req, res, next) => {
             });
           }
         });
+        
       });
     });    
     
