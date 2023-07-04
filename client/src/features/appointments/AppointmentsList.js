@@ -1,8 +1,11 @@
 import { useGetAppointmentsQuery } from "./appointmentsApiSlice"
 import Appointment from './Appointments'
 import { useState } from "react";
+import useAuth from "../../hooks/useAuth";
 
 const AppointmentsList = ({isEdit}) => {
+
+    const { id, role } = useAuth()
 
     const [statusFilter, setStatusFilter] = useState('');
     const [serviceFilter, setServiceFilter] = useState('');
@@ -52,7 +55,16 @@ const AppointmentsList = ({isEdit}) => {
     }
 
     if (isSuccess) {
-        let filteredAppointments = appointments;
+        let filteredAppointments;
+    
+        console.log(appointments)
+        if (role === 'user') {
+            filteredAppointments = appointments.filter(app => app.user._id === id);
+        } else if (role === 'employee') {
+            filteredAppointments = appointments.filter(app => app.employee._id === id);
+        }else{
+            filteredAppointments = appointments
+        }
         let uniqueServices = [...new Set(appointments.map(appointment => appointment.service.name))];
         if (statusFilter) {
             filteredAppointments = filteredAppointments.filter(appointment => appointment.status === statusFilter);
