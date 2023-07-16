@@ -33,7 +33,7 @@ const getAppointment =asyncHandler( async (req, res, next) => {
 })
 
 // Create new appointment
-const createAppointment =asyncHandler( async (req, res, next) => {
+const createAppointment = asyncHandler(async (req, res, next) => {
   const { user, employee, service, startTime, endTime } = req.body;
 
   //Check for overlap with existing appointments
@@ -68,19 +68,35 @@ const createAppointment =asyncHandler( async (req, res, next) => {
   }
 
   // Create appointment
-  console.log("Before await");
   const appointment = await Appointment.create({ user, employee, service, startTime, endTime })
-  .catch(err => console.log(err))
-  console.log("After await")
 
-  //Update employee availability
-  await User.updateOne(
-    { _id: employee },
-    { $push: { availability: { startTime: startTime, endTime: endTime } } }
-  );
+  // Fetch the employee's current availability
+  const employeeData = await User.findById(employee);
+  const overlappingAvailability = employeeData.availability.find(slot =>
+    new Date(slot.startTime) <= new Date(startTime) && new Date(slot.endTime) >= new Date(endTime));
+
+  if (!overlappingAvailability) {
+    return res.status(400).json({ error: 'Employee not available' });
+  }
+
+  // Remove the overlapping availability
+  const availabilityIndex = employeeData.availability.indexOf(overlappingAvailability);
+  employeeData.availability.splice(availabilityIndex, 1);
+
+  // Add new slots before and after the appointment time, if they are not zero-length
+  if (new Date(startTime).getTime() !== new Date(overlappingAvailability.startTime).getTime()) {
+    employeeData.availability.push({ startTime: overlappingAvailability.startTime, endTime: startTime });
+  }
+  if (new Date(endTime).getTime() !== new Date(overlappingAvailability.endTime).getTime()) {
+    employeeData.availability.push({ startTime: endTime, endTime: overlappingAvailability.endTime });
+  }
+
+  // Save updated availability
+  await employeeData.save();
 
   res.status(200).json(appointment);
 })
+
 
 
 // Update appointment

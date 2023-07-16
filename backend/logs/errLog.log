@@ -53,3 +53,7 @@
   "    endTime: '2023-07-03T09:00:00.000Z'\n" +
   '  }\n' +
   ']" (type string) at path "appointments.0" because of "CastError"	POST	/appointment	http://localhost:3000
+16:46:56	08-07-2023	ea0d8eb7-b3a4-4cf6-a9ef-f42ac40f34c5	MongoServerError: $in needs an array	DELETE	/users/64a08e154b081e180849ce61/availability	http://localhost:3000
+16:47:11	08-07-2023	5612d2cb-ab0a-4b42-82c0-233e72d6a6a6	MongoServerError: $in needs an array	DELETE	/users/64a08e154b081e180849ce61/availability	http://localhost:3000
+16:49:37	08-07-2023	0d06f165-3c30-4ad5-9998-3ea8f2b7d2c6	MongoServerError: $in needs an array	DELETE	/users/64a08e154b081e180849ce61/availability	http://localhost:3000
+21:34:21	14-07-2023	8ce3c446-4cf4-4ca5-af58-6925c7c19b77	ReferenceError: next is not defined	PATCH	/users/64a08e154b081e180849ce61/availability	http://localhost:3000
