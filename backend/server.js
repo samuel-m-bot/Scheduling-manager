@@ -24,6 +24,7 @@ app.use('/auth', require('./routes/authRoutes'))
 app.use('/users', require('./routes/userRoutes'))
 app.use('/appointment', require('./routes/appointmentRoutes'))
 app.use('/service', require('./routes/serviceRoutes'))
+app.use('/api/chat', require('./routes/chatRoutes'));
 
 app.all('*', (req,res) =>{
   res.status(404)
