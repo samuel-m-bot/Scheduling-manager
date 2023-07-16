@@ -222,6 +222,9 @@
   .chat-send-button {
     padding: 3px 5px;
   }
+  .chat-container.closed {
+    visibility: hidden;
+  }
 }
 
 
