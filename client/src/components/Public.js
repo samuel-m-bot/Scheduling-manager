@@ -3,6 +3,8 @@ import useAuth from "../hooks/useAuth"
 import ServicesList from '../features/services/ServicesList'  
 import { useSelector } from 'react-redux';  
 import LoadingSpinner from './LoadingSpinner';
+import ChatBox from '../features/chat/ChatBox';
+import './Public.css'
 
 const Public = () => {
     const {  role } = useAuth()
@@ -16,11 +18,10 @@ const Public = () => {
             <header className='public__header'>
             <nav class="nav-bar">
                 <div class="nav-section left">
-                    <h1>Quick Fix</h1>
+                <Link to="/"><h1>Quick Fix</h1></Link>
                 </div>
                 <div class="nav-section center">
-                    <a href="#about">About</a>
-                    <a href="#services">Services</a>
+                    <Link to="/about">About</Link>
                 </div>
                 <div class="nav-section right">
                     <select id="language-selector">
@@ -38,17 +39,17 @@ const Public = () => {
                     Top automobile shop</p>
             </div>
             <div className='public__service' id='content"'>
-                <h1>Services</h1>
+                <h1 className='Services_title'>Services</h1>
                 {(role=='') && <Link to="/userLogin">
-                                    <button type="button">
+                                    <button type="button" className="button button-login">
                                         Login to book a service
                                     </button>
                                 </Link>}
-                                <Link to="/userRegister">
-                                    <button type="button">
+                                {(role=='') &&<Link to="/userRegister">
+                                    <button type="button" className="button button-register">
                                         Register to book a service
                                     </button>
-                                </Link>
+                                </Link>}
                                 <ServicesList isEdit={false} isBook={false} />  {/* use ServicesList component */}
             </div>
             <div className='public__companyInfo'>
@@ -61,10 +62,13 @@ const Public = () => {
                 <br />
                 <p>Owner: Samuel Mongare</p>
             </div>
+            <div>
+                {<ChatBox/>}
+            </div>
             </main>
-            <footer>
+            {/* <footer>
                 <Link to="/employeeLogin">Employee Login</Link>
-            </footer>
+            </footer> */}
         </section>
  
     )

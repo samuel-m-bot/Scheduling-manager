@@ -36,27 +36,28 @@ const HomeHeader = () => {
 
     const logoutButton = (
         <button
-            className="icon-button"
+            className="icon-button logout-button"
             title="Logout"
             onClick={sendLogout}
         >
             <FontAwesomeIcon icon={faRightFromBracket} />
+            <span>Logout</span>
         </button>
-    )
+    )    
 
     const content = (
         <header className="home-header">
-            <div className={`home-header__container ${homeClass}`}>
-                <Link to="/home">
-                    <h1 className="home-header__title">Quick Fix</h1>
-                </Link>
-                <nav className="home-header__nav">
-                    {/* add more buttons later */}
-                    {logoutButton}
-                </nav>
-            </div>
+          <div className={`home-header__container ${homeClass}`}>
+            <Link to="/home" className="home-header__title">
+              <h1>Quick Fix</h1>
+            </Link>
+            <nav className="home-header__nav">
+              {logoutButton}
+            </nav>
+          </div>
         </header>
-    )
+      )
+      
 
     return content
 }

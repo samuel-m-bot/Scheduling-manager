@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { useSelector } from 'react-redux'
 import { selectUserById } from './usersApiSlice'
+import './Users.css'
 
 const User = ({ userId }) => {
     const tes = useSelector(state => console.log(state))

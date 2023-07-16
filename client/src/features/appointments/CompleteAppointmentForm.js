@@ -2,6 +2,7 @@ import React from 'react'
 import { useUpdateAppointmentMutation } from './appointmentsApiSlice';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Appointments.css'
 
 const CompleteAppointmentForm = ({appointment}) => {
 

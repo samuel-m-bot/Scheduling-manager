@@ -3,8 +3,12 @@ import { useLocation } from 'react-router-dom';
 import { useAddNewAppointmentMutation } from './appointmentsApiSlice';
 import useAuth from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import './Checkout.css';
+import './Appointments.css'
+
 
 const Checkout = () => {
+  <script src=''></script>
   const location = useLocation();
   const { id, firstName } = useAuth()
   
@@ -58,21 +62,24 @@ const Checkout = () => {
 
   if(isSuccess) {
     return (
-      <div>
+      <div className="appointment-confirmation">
         <h1>Appointment Confirmed!</h1>
         <p>You have booked the {service.name} service.</p>
         <p>Your appointment is on {slot.date} from {slot.start} to {slot.end}.</p>
-        <button onClick={() =>navigate('/home') }>Go back to home menu</button>
+        <button className="confirmation-button" onClick={() =>navigate('/home') }>Go back to home menu</button>
       </div>
     );
   }
 
   return (
-    <div>
-      <h1>Checkout</h1>
-      <p>You have selected the {service.name} service.</p>
-      <p>Your appointment is on {slot.date} from {slot.start} to {slot.end}.</p>
-      <button onClick={handleCheckout}>Checkout</button>
+    <div className="checkout-container">
+      <h1 className="checkout-title">Checkout</h1>
+      <div className="checkout-details">
+        <h2 className="checkout-subtitle">Appointment Details:</h2>
+        <p>You have selected the <strong>{service.name}</strong> service.</p>
+        <p>Your appointment is on <strong>{slot.date}</strong> from <strong>{slot.start}</strong> to <strong>{slot.end}</strong>.</p>
+      </div>
+      <button className="checkout-button" onClick={handleCheckout}>Confirm Appointment</button>
     </div>
   );
 };

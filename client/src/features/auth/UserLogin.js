@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setCredentials } from './authSlice'
 import { useLoginMutation } from './authApiSlice'
+import './Auth.css'
 
 import usePersist from '../../hooks/usePersist'
 
@@ -70,53 +71,72 @@ const EmployeeLogin = () => {
     if (isLoading) return <p>Loading...</p>
 
     const content = (
-        <section className="public">
-            <header>
-                <h1>User Login</h1>
+        <>
+            <header className='public__header'>
+                <nav class="nav-bar">
+                    <div class="nav-section left">
+                        <Link to="/"><h1>Quick Fix</h1></Link>
+                    </div>
+                    <div class="nav-section center">
+                        <Link to="/">Home</Link>
+                    </div>
+                    <div class="nav-section right">
+                        <select id="language-selector">
+                            <option value="english" selected>English</option>
+                            <option value="spanish">Español</option>
+                            <option value="french">Français</option>
+                        </select>
+                    </div>
+                </nav>
             </header>
-            <main className="login">
-                <p ref={errRef} className={errClass} aria-live="assertive">{errMsg}</p>
+            <section className="userLoginSection">
+                <div>
+                    <h1>User Login</h1>
+                </div>
+                <main className="userLoginMain">
+                    <p ref={errRef} className={errClass} aria-live="assertive">{errMsg}</p>
 
-                <form className="form" onSubmit={handleSubmit}>
-                    <label htmlFor="email">Email:</label>
-                    <input
-                        className="form__input"
-                        type="text"
-                        id="email"
-                        ref={userRef}
-                        value={email}
-                        onChange={handleEmailInput}
-                        autoComplete="off"
-                        required
-                    />
-
-                    <label htmlFor="password">Password:</label>
-                    <input
-                        className="form__input"
-                        type="password"
-                        id="password"
-                        onChange={handlePwdInput}
-                        value={password}
-                        required
-                    />
-                    <button className="form__submit-button">Sign In</button>
-
-                    <label htmlFor="persist" className="form__persist">
+                    <form className="userLoginForm" onSubmit={handleSubmit}>
+                        <label htmlFor="email" className='userLoginLabel'>Email:</label>
                         <input
-                            type="checkbox"
-                            className="form__checkbox"
-                            id="persist"
-                            onChange={handleToggle}
-                            checked={persist}
+                            className="userLoginInput"
+                            type="text"
+                            id="email"
+                            ref={userRef}
+                            value={email}
+                            onChange={handleEmailInput}
+                            autoComplete="off"
+                            required
                         />
-                        Trust This Device
-                    </label>
-                </form>
-            </main>
-            <footer>
-                <Link to="/">Back to Home</Link>
-            </footer>
-        </section>
+
+                        <label htmlFor="password" className='userLoginLabel'>Password:</label>
+                        <input
+                            className="userLoginInput"
+                            type="password"
+                            id="password"
+                            onChange={handlePwdInput}
+                            value={password}
+                            required
+                        />
+                        <button className="userLoginSubmitButton">Sign In</button>
+
+                        <label htmlFor="persist" className="userLoginPersistLabel">
+                            <input
+                                type="checkbox"
+                                className="form__checkbox"
+                                id="persist"
+                                onChange={handleToggle}
+                                checked={persist}
+                            />
+                            Trust This Device
+                        </label>
+                    </form>
+                </main>
+                <footer className='userLoginFooter'>
+                    <Link to="/" className='userLoginBackLink'>Back to Home</Link>
+                </footer>
+            </section>
+        </>
     )
 
     return content

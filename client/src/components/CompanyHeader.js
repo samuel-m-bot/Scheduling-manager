@@ -36,11 +36,12 @@ const CompanyHeader = () => {
 
     const logoutButton = (
         <button
-            className="icon-button"
+            className="icon-button logout-button"
             title="Logout"
             onClick={sendLogout}
         >
             <FontAwesomeIcon icon={faRightFromBracket} />
+            <span>Logout</span>
         </button>
     )
 

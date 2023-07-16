@@ -100,11 +100,11 @@ function getMinutesFromTimeString(timeString) {
     content = <p>Updating availability...</p>;
   } else if (isError) {
     content = (
-      <div>
-        <h1>Error: {error.data.message}</h1>
-        <button onClick={() => window.location.reload()}>Try Again</button>
+      <div className="errorContainer">
+        <h1 className="errorTitle">Error: {error.data.message}</h1>
+        <button className="retryButton" onClick={() => window.location.reload()}>Try Again</button>
       </div>
-    );
+    );    
   } else {
     content = (
     

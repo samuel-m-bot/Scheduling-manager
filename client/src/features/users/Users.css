@@ -1,0 +1,166 @@
+.error-message {
+    color: red;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+.registration-form__container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh; /* You might want to adjust this value to fit your layout */
+    background-color: #f5f5f5;
+}
+
+.registration-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 300px;
+    margin: 0 auto;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+
+.registration-form__title-row {
+    display: flex;
+    justify-content: center;
+}
+
+.registration-form__label {
+    color: #333;
+    font-size: 1rem;
+}
+
+.registration-form__input {
+    padding: .5rem;
+    border: 1px solid #ccc;
+    border-radius: .25rem;
+    font-size: 1rem;
+}
+
+.registration-form__button {
+    padding: .5rem;
+    border: none;
+    border-radius: .25rem;
+    background-color: #007BFF;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.registration-form__button:disabled {
+    background-color: #ccc;
+}
+.userLoginFooter {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.userLoginBackLink {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.userLoginBackLink:hover {
+    text-decoration: underline;
+    color: #007BFF;
+}
+.table--users {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table__thead {
+    background-color: #007bff;
+    color: black;
+}
+
+.table__th {
+    padding: 10px;
+    text-align: left;
+    font-size: 16px;
+}
+
+.table__row {
+    border-bottom: 1px solid #dddddd;
+}
+
+.table__row:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.table__row:hover {
+    background-color: #ddd;
+}
+
+.table__cell {
+    padding: 10px;
+    vertical-align: top;
+}
+
+.table__cell--inactive {
+    color: #999999;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    font-size: 24px; /* Adjust as needed */
+}
+
+.icon-button:hover {
+    color: #007bff;
+    transform: scale(1.1); /* Adds a zoom effect on hover */
+}
+.register-success {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    text-align: center;
+    padding: 20px;
+}
+
+.register-success h1 {
+    color: #007bff;
+    font-size: 1.6em;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.register-success button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.register-success button:hover {
+    background-color: #0056b3;
+}
+.registration-form__input.error {
+    border: 1px solid red;
+}
+
+.input-error {
+    color: red;
+    font-size: 0.8em;
+    margin-top: 5px;
+}
+
+

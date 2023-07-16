@@ -12,6 +12,7 @@ import { useRef } from "react";
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 import { Calendar } from "react-date-range";
+import './Appointments.css'
 
 const EditAppointmentForm = ({ appointment }) => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -33,7 +34,7 @@ const EditAppointmentForm = ({ appointment }) => {
   );
   const [dateSelectionOpen, setDateSelectionOpen] = useState(false);
   const [noSlots, setNoSlots] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState(appointment.employee.surname +" "+ appointment.employee.firstName);
+  const [selectedEmployee, setSelectedEmployee] = useState(appointment.employee.firstName +" "+ appointment.employee.surname);
   const [showEmployeeSelect, setShowEmployeeSelect] = useState(false);
   const [fetchEmployees, setFetchEmployees] = useState(false);
 
@@ -174,8 +175,8 @@ const onDeleteAppointmentClicked = async () => {
           {selectedDate ? (
             <p>{format(selectedDate, "dd/MM/yyyy HH:mm")}</p>
           ) : (
-            <p>Date: {format(parseISO(appointment.startTime), "dd-MM-yyyy")}<br />
-            Time: {format(parseISO(appointment.startTime), "HH:mm")} - {format(parseISO(appointment.endTime), "HH:mm")}</p>
+            <p><b>Date: {format(parseISO(appointment.startTime), "dd-MM-yyyy")}</b><br />
+            <b>Time: {format(parseISO(appointment.startTime), "HH:mm")} - {format(parseISO(appointment.endTime), "HH:mm")}</b></p>
             
           )}
           <button onClick={() => {
@@ -265,6 +266,7 @@ const onDeleteAppointmentClicked = async () => {
         ) : (
           noSlots && <p>No available slots for selected date.</p>
         )}
+        <div>
         <button
             title="Save"
             onClick={onSaveAppointmentClicked}
@@ -278,6 +280,7 @@ const onDeleteAppointmentClicked = async () => {
         >
           <FontAwesomeIcon icon={faTrashCan} />
         </button>
+        </div>
     </div>
     );
   }

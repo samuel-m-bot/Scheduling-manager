@@ -12,6 +12,8 @@ const AppointmentsList = ({isEdit}) => {
     const [timeFilter, setTimeFilter] = useState('');
     const [showOutcome, setShowOutcome] = useState(false);
     const [currentOutcome, setCurrentOutcome] = useState("");
+    const [sortAscending, setSortAscending] = useState(true);
+
 
     const {
         data: appointments,
@@ -79,6 +81,13 @@ const AppointmentsList = ({isEdit}) => {
         } else if (timeFilter === "Furthest") {
             sortedAppointments.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
         }
+
+        if (sortAscending) {
+            sortedAppointments.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+        } else {
+            sortedAppointments.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
+        }
+          
         
         console.log(sortedAppointments)
         const tableContent = sortedAppointments.length
@@ -88,40 +97,29 @@ const AppointmentsList = ({isEdit}) => {
 
         content = (
             <div>
-                <form className="filter-form">
-                    <label>
-                    Filter by status:
-                    <select value={statusFilter} onChange={handleFilterChange} name="status">
+                <table className="appointments-table">
+                    <thead>
+                        <tr className="appointments-table__header">
+                            <th scope="col">Status 
+                            <select value={statusFilter} onChange={handleFilterChange} name="status" className="filler_select">
                         <option value="">--All--</option>
                         <option value="open">Open</option>
                         <option value="completed">Completed</option>
                         <option value="cancelled">Cancelled</option>
-                    </select>
-                    </label>
-                    <label>
-                    Sort by time:
-                    <select value={timeFilter} onChange={handleFilterChange} name="time">
-                        <option value="">--None--</option>
-                        <option value="Soonest">Soonest</option>
-                        <option value="Furthest">Furthest</option>
-                    </select>
-                    </label>
-                    <label>
-                    Filter by service:
-                    <select value={serviceFilter} onChange={handleFilterChange} name="service">
-                        <option value="">--All--</option>
-                        {uniqueServices.map((service, index) => <option value={service} key={index}>{service}</option>)}
-                    </select>
-                    </label>
-                </form>
-                <table className="appointments-table">
-                    <thead>
-                        <tr className="appointments-table__header">
-                            <th scope="col">Status</th>
-                            <th scope="col">Date and Time</th>
+                    </select></th>
+                            <th scope="col">
+                                Date and Time
+                                <button onClick={() => setSortAscending(!sortAscending)}>
+                                    {sortAscending ? "▲" : "▼"}
+                                </button>
+                            </th>
                             <th scope="col">User</th>
                             <th scope="col">Employee</th>
-                            <th scope="col">Service</th>
+                            <th scope="col">Service
+                            <select value={serviceFilter} onChange={handleFilterChange} name="service" className="filler_select">
+                                <option value="">--All--</option>
+                                {uniqueServices.map((service, index) => <option value={service} key={index}>{service}</option>)}
+                            </select></th>
                             {isEdit && (
                                 <th scope="col">Edit</th>
                             )}

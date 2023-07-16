@@ -1,26 +1,35 @@
 import {Link} from 'react-router-dom'
 import useAuth from "../../hooks/useAuth"
+import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
+import { faWrench } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const WelcomeUser = () => {
-    const date = new Date()
-    const today = new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'long' }).format(date)
-
     const { firstName, surname, isAdmin } = useAuth()
 
     const content = (
         <section className="welcome">
-
-            <p>{today}</p>
-
             <h1>Welcome {firstName} {surname}!</h1>
+            
+            <div className="buttonContainer_user">
+                <button className="serviceButton">
+                    <Link to="/home/services">
+                        <FontAwesomeIcon icon={faWrench} /> Book a Service
+                    </Link>
+                </button>
 
-            <p><Link to="/home/services">Book a Service </Link></p>
-
-            <p><Link to="/home/appointments">View appointments</Link></p>
-
-            {(isAdmin) && <p><Link to="/company/users">View User Settings</Link></p>}
-
+                <button className="appointmentButton">
+                    <Link to="/home/appointments">
+                        <FontAwesomeIcon icon={faCalendarAlt} /> View appointments
+                    </Link>
+                </button>
+            </div>
+            
+            {(isAdmin) && 
+                <p><Link to="/company/users">View User Settings</Link></p>
+            }
         </section>
+
     )
 
     return content

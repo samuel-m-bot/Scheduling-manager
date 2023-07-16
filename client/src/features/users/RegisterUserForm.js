@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react"
 import { useAddNewUserMutation } from "./usersApiSlice"
 import { useNavigate } from "react-router-dom"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSave } from "@fortawesome/free-solid-svg-icons"
+import "./Users.css"
+import { Link } from "react-router-dom"
 
 const USER_REGEX = /^[A-z]{3,20}$/
 const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const RegisterUserForm = () => {
     const [addNewUser, {
@@ -28,22 +29,6 @@ const RegisterUserForm = () => {
     const [role, setRole] = useState("employee")
     const [registrationCompleted, setRegistrationCompleted] = useState(false)
 
-    useEffect(() => {
-        setValidFirstName(USER_REGEX.test(firstName))
-    }, [firstName])
-
-    useEffect(() => {
-        setValidSurname(USER_REGEX.test(surname))
-    }, [surname])
-
-    // useEffect(() => {
-    //     setValidEmail(USER_REGEX.test(email))
-    // }, [email])
-
-    useEffect(() => {
-        setValidPassword(PWD_REGEX.test(password))
-    }, [password])
-
     const handelRegisteredComplete = () => (
         navigate('/')
     )
@@ -53,10 +38,66 @@ const RegisterUserForm = () => {
         }
     }, [isSuccess])
 
-    const onFirstNameChanged = e => setFirstName(e.target.value)
-    const onSurnameChanged = e => setSurname(e.target.value)
-    const onEmailChanged = e => setEmail(e.target.value)
-    const onPasswordChanged = e => setPassword(e.target.value)
+    const [firstNameError, setFirstNameError] = useState('');
+    const [surnameError, setSurnameError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [firstNameTouched, setFirstNameTouched] = useState(false);
+    const [surnameTouched, setSurnameTouched] = useState(false);
+    const [emailTouched, setEmailTouched] = useState(false);
+    const [passwordTouched, setPasswordTouched] = useState(false);
+
+    useEffect(() => {
+        if (firstNameTouched) {
+            setFirstNameError(firstName && !USER_REGEX.test(firstName) ? 'First name is invalid' : '');
+        }
+    }, [firstName, firstNameTouched]);
+    
+    useEffect(() => {
+        if (surnameTouched) {
+            setSurnameError(surname && !USER_REGEX.test(surname) ? 'Surname is invalid' : '');
+        }
+    }, [surname, surnameTouched]);
+    
+    useEffect(() => {
+        if (emailTouched) {
+            setEmailError(email && !EMAIL_REGEX.test(email) ? 'Email is invalid' : '');
+        }
+    }, [email, emailTouched]);
+    
+    useEffect(() => {
+        if (passwordTouched) {
+            setPasswordError(password && !PWD_REGEX.test(password) ? 'Password is invalid' : '');
+        }
+    }, [password, passwordTouched]);
+
+    const onFirstNameChanged = e => {
+        setFirstName(e.target.value)
+        if (!firstNameTouched) {
+            setFirstNameTouched(true)
+        }
+    }
+
+    const onSurnameChanged = e => {
+        setSurname(e.target.value)
+        if (!surnameTouched) {
+            setSurnameTouched(true)
+        }
+    }
+
+    const onEmailChanged = e => {
+        setEmail(e.target.value)
+        if (!emailTouched) {
+            setEmailTouched(true)
+        }
+    }
+
+    const onPasswordChanged = e => {
+        setPassword(e.target.value)
+        if (!passwordTouched) {
+            setPasswordTouched(true)
+        }
+    }
 
     const canSave = [validFirstName, validSurname, validPassword].every(Boolean) && !isLoading
 
@@ -79,74 +120,99 @@ const RegisterUserForm = () => {
 
     const content = registrationCompleted
         ? (
-            <div>
+            <div className="register-success">
                 <h1>Register successful. Account was created. Go back to home screen and login to account</h1>
                 <button onClick={handelRegisteredComplete}>Go back to home screen</button>
             </div>
         )
         : (
             <>
-                <p className={errClass}>{error?.data?.message}</p>
+                <header className='public__header'>
+                    <nav class="nav-bar">
+                        <div class="nav-section left">
+                            <Link to="/"><h1>Quick Fix</h1></Link>
+                        </div>
+                        <div class="nav-section center">
+                            <Link to="/">Home</Link>
+                        </div>
+                        <div class="nav-section right">
+                            <select id="language-selector">
+                                <option value="english" selected>English</option>
+                                <option value="spanish">Español</option>
+                                <option value="french">Français</option>
+                            </select>
+                        </div>
+                    </nav>
+            </header>
+            {(error?.data && 
+                <p className="error-message">{error?.data?.message}</p>
+            )}
+                <div className="registration-form__container">
+                    <form className="registration-form" onSubmit={onSaveUserClicked}>
+                        <div className="registration-form__title-row">
+                            <h2>Register</h2>
+                        </div>
+                        <label className="registration-form__label" htmlFor="firstName">
+                            FirstName: <span className="nowrap">[3-20 letters]</span></label>
+                        <input
+                            className={`registration-form__input ${firstNameError ? 'error' : ''}`}
+                            id="firstName"
+                            name="firstName"
+                            type="text"
+                            autoComplete="off"
+                            value={firstName}
+                            onChange={onFirstNameChanged}
+                        />
+                        {firstNameError && firstNameTouched && <div className="input-error">{firstNameError}</div>}
 
-                <form className="form" onSubmit={onSaveUserClicked}>
-                    <div className="form__title-row">
-                        <h2>Register</h2>
-                    </div>
-                    <label className="form__label" htmlFor="firstName">
-                        FirstName: <span className="nowrap">[3-20 letters]</span></label>
-                    <input
-                        className={`form__input`}
-                        id="firstName"
-                        name="firstName"
-                        type="text"
-                        autoComplete="off"
-                        value={firstName}
-                        onChange={onFirstNameChanged}
-                    />
+                        <label className="registration-form__label" htmlFor="surname">
+                            Surname: <span className="nowrap">[3-20 letters]</span></label>
+                        <input
+                            className={`registration-form__input ${surnameError ? 'error' : ''}`}
+                            id="surname"
+                            name="surname"
+                            type="text"
+                            autoComplete="off"
+                            value={surname}
+                            onChange={onSurnameChanged}
+                        />
+                        {surnameError && surnameTouched && <div className="input-error">{surnameError}</div>}
 
-                    <label className="form__label" htmlFor="surname">
-                        Surname: <span className="nowrap">[3-20 letters]</span></label>
-                    <input
-                        className={`form__input`}
-                        id="surname"
-                        name="surname"
-                        type="text"
-                        autoComplete="off"
-                        value={surname}
-                        onChange={onSurnameChanged}
-                    />
+                        <label className="registration-form__label" htmlFor="email">
+                            Email: <span className="nowrap">[3-20 letters]</span></label>
+                        <input
+                            className={`registration-form__input ${emailError ? 'error' : ''}`}
+                            id="email"
+                            name="email"
+                            type="text"
+                            autoComplete="off"
+                            value={email}
+                            onChange={onEmailChanged}
+                        />
+                        {emailError && emailTouched && <div className="input-error">{emailError}</div>}
 
-                    <label className="form__label" htmlFor="email">
-                        Email: <span className="nowrap">[3-20 letters]</span></label>
-                    <input
-                        className={`form__input`}
-                        id="email"
-                        name="email"
-                        type="text"
-                        autoComplete="off"
-                        value={email}
-                        onChange={onEmailChanged}
-                    />
+                        <label className="registration-form__label" htmlFor="password">
+                            Password: <span className="nowrap">[4-12 chars incl. !@#$%]</span></label>
+                        <input
+                            className={`registration-form__input ${passwordError ? 'error' : ''}`}
+                            id="password"
+                            name="password"
+                            type="password"
+                            value={password}
+                            onChange={onPasswordChanged}
+                        />
+                        {passwordError && passwordTouched &&<div className="input-error">{passwordError}</div>}
 
-                    <label className="form__label" htmlFor="password">
-                        Password: <span className="nowrap">[4-12 chars incl. !@#$%]</span></label>
-                    <input
-                        className={`form__input ${validPwdClass}`}
-                        id="password"
-                        name="password"
-                        type="password"
-                        value={password}
-                        onChange={onPasswordChanged}
-                    />
-
-                    <button
-                        className="icon-button"
-                        title="Register"
-                        disabled={!canSave}
-                    >
-                        Register
-                    </button>
-                </form>
+                        <button
+                            className="registration-form__button"
+                            title="Register"
+                            disabled={!canSave}
+                        >
+                            Register
+                        </button>
+                        <Link to="/" className='userLoginBackLink'>Back to Home</Link>
+                    </form>
+                </div>
             </>
         )
     return content
