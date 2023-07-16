@@ -66,9 +66,9 @@ const Public = () => {
                 {<ChatBox/>}
             </div>
             </main>
-            {/* <footer>
+            <footer>
                 <Link to="/employeeLogin">Employee Login</Link>
-            </footer> */}
+            </footer>
         </section>
  
     )
