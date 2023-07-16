@@ -1,0 +1,229 @@
+/* ChatBox.css */
+
+.chat-container {
+  position: fixed;
+  bottom: 0;
+  right: 0; 
+  margin: 20px;
+  transition: all 0.5s;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+  min-height: 400px;
+  max-height: 90vh;
+  background-color: white;
+  border-radius: 10px;
+  border: 5px solid #083D77;
+  overflow: hidden;
+}
+
+.chat-box {
+  width: 300px;
+  max-height: 500px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-color: white;
+  overflow: hidden;
+  transition: all 0.5s;
+}
+
+.chat-box-messages {
+  flex-grow: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.message-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.chat-box-input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+
+.close-chat-button {
+  align-self: flex-end;
+  margin: 10px;
+  padding: 5px 10px;
+  background-color: #007bff; /* Blue */
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 16px;
+}
+
+.close-chat-button:hover {
+  background-color: #0056b3; /* Darker blue */
+}
+
+
+.chat-container.closed {
+  height: 0;
+  overflow: hidden;
+  border: none;  /* Add this line */
+}
+
+.chat-icon-button {
+  position: fixed;
+  bottom: 60px;
+  right: 20px;
+  font-size: 24px;
+  z-index: 1000;
+  /* additional styling */
+  border: none;
+  background: #007bff;
+  color: white;
+  border-radius: 50%;
+  height: 60px;
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.chat-icon-button:hover {
+  background: #0056b3;
+}
+
+.chat-history {
+  padding: 10px;
+  overflow-y: scroll;
+  flex-grow: 1;
+}
+
+.chat-message.system {
+  color: blue;
+}
+
+.chat-message.user,
+.chat-message.ai {
+  max-width: 60%;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 20px;
+}
+
+.chat-message.user {
+  align-self: flex-end;
+  background: #007bff; 
+  color: white;
+  position: relative;
+}
+
+.chat-message.user::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: 0;
+  right: -10px;
+  border: 10px solid;
+  border-color: #007bff transparent transparent transparent;
+}
+
+.chat-message.ai {
+  align-self: flex-start;
+  background: #f1f0f0; 
+  color: black;
+  position: relative;
+}
+
+.chat-message.ai::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: 0;
+  left: -10px;
+  border: 10px solid;
+  border-color: #f1f0f0 transparent transparent transparent;
+}
+.chat-input-field {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.chat-send-button {
+  color: white;
+  background-color: blue;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+/* Place your existing CSS above this line */
+
+/* Media Query for mobile devices */
+
+@media only screen and (max-width: 768px) {
+
+  .chat-container {
+    margin: 10px;
+    min-height: 200px;
+    max-height: 75vh;
+  }
+
+  .chat-box {
+    width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+  }
+
+  .chat-box-messages {
+    padding: 5px;
+  }
+
+  .message-container {
+    font-size: 14px;
+  }
+
+  .chat-box-input {
+    padding: 5px;
+  }
+
+  .close-chat-button {
+    margin: 5px;
+    padding: 2px 5px;
+    font-size: 14px;
+  }
+
+  .chat-icon-button {
+    bottom: 10px;
+    right: 10px;
+    height: 40px;
+    width: 40px;
+  }
+  
+  .chat-message.user,
+  .chat-message.ai {
+    max-width: 80%;
+    margin: 5px 0;
+    padding: 5px;
+    font-size: 12px;
+  }
+
+  .chat-message.user::before,
+  .chat-message.ai::before {
+    border-width: 5px;
+  }
+
+  .chat-input-field {
+    font-size: 12px;
+  }
+
+  .chat-send-button {
+    padding: 3px 5px;
+  }
+}
+
+
+
+
