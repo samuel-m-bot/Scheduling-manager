@@ -27,6 +27,8 @@ import BookService from './features/appointments/BookService'
 import Checkout from './features/appointments/Checkout'
 import CompleteAppointment from './features/appointments/CompleteAppointment'
 import RegisterUserForm from './features/users/RegisterUserForm'
+import ViewAvailability from './features/users/ViewAvailability'
+import About from './components/About'
 
 const NotFound = () => (
   <div>
@@ -41,6 +43,7 @@ function App() {
       <Route element={<PrefetchServices />}>
         <Route path="/" element={<Layout />}>
           <Route index element={<Public />} />
+          <Route path='about' element={<About />} />
           <Route path='employeeLogin' element={<EmployeeLogin />} />
           <Route path='userLogin' element={<UserLogin />} />
           <Route path='userRegister' element={<RegisterUserForm />} />
@@ -55,7 +58,8 @@ function App() {
                     <Route index element={<UsersList />} />
                     <Route path=":id" element={<EditUser />} />
                     <Route path="new" element={<NewUserForm />} />
-                    <Route path=":id/availability" element={<UpdateAvailability />} />
+                    <Route path=":id/updateAvailability" element={<UpdateAvailability />} />
+                    <Route path=":id/viewAvailability" element={<ViewAvailability />} />
                   </Route>
 
                   <Route path='services'>

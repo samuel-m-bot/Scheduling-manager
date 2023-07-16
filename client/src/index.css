@@ -38,7 +38,6 @@
 }
 
 .icon-button {
-  width: 48px;
   height: 48px;
   font-size: 2.5rem;
   background-color: transparent;
@@ -60,9 +59,9 @@
 /* || GENERAL STYLES */
 
 body {
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
   min-height: 100vh;
-  background-color: #E7E8EE;
+  background-color: #ffffff;
   color: #000;
   /* background-image: url('./img/background.png'); */
   background-size: cover;
@@ -106,6 +105,9 @@ a:focus-visible {
   flex-direction: column;
   /* gap: 1rem; */
 }
+.welcome h1{
+  margin-bottom: 20px;
+}
 
 .public {
   
@@ -115,7 +117,7 @@ a:focus-visible {
 .public__main,
 .login {
   flex-grow: 1;
-  border-top: 2px solid var(--BORDER-COLOR);
+  /* border-top: 2px solid var(--BORDER-COLOR); */
   border-bottom: 2px solid var(--BORDER-COLOR);
   /* padding: 1em 0; */
   display: flex; /* Added to center .image-text div */
@@ -127,8 +129,8 @@ a:focus-visible {
   position: relative;
 }
 .nav-bar {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
   background-color: #083D77;
   color: #fff;
@@ -139,6 +141,11 @@ a:focus-visible {
   margin: 0 10px;
   color: #fff;
   text-decoration: none;
+}
+.nav-section.left {
+  margin-left: 20px;
+  padding-left: 0;
+  text-align: left;
 }
 
 .nav-section h1 {
@@ -167,46 +174,120 @@ a:focus-visible {
 
 .image-text h1 {
   font-size: 50px;
+  text-align: center; 
 }
+
 .image-text p {
   text-align: center;
   font-size: 24px;
-  align-self: flex-start;
 }
+
 .public__addr {
   margin-top: 1em;
+}
+
+.Services_title{
+  font-size: 50px;
+  padding-top: 30px;
 }
 .public__service {
   width: 80%; 
   margin: auto;
   text-align: center; 
   margin-top: 2rem;
+  background-color: #E7E8EE;
 }
 
 .service__container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .service__item {
-  flex: 0 1 calc(50% - 20px); /* Adjust 20px as needed for the desired space between the items */
-  background: #CFD1DD; /* Change to desired background color */
+  flex-basis: calc(50% - 20px); /* This will create 2 columns when the viewport is wide enough */
+  display: flex;
+  align-items: center; 
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  background: #CFD1DD;
   border-radius: 5px;
   padding: 20px;
-  margin-bottom: 20px; /* Adjust for desired space between rows */
-  text-align: center;
-  max-width: 40%;
 }
 
-@media (max-width: 600px) {
+.service__item__image {
+  width: 40%; 
+  margin-right: 20px;
+  object-fit: cover; 
+  border-radius: 10px;
+}
+
+.service__item__content {
+  width: 70%; 
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow: hidden;
+}
+
+.service__item__content h2 {
+  margin-bottom: 10px;
+}
+
+.service__item__content p {
+  margin-bottom: 10px;
+}
+@media only screen and (max-width: 768px) {
+  .Services_title {
+    font-size: 30px;
+    padding-top: 15px;
+  }
+
+  .public__service {
+    width: 100%;
+  }
+
   .service__item {
-    flex: 0 1 100%; /* Makes items take full width on small screens */
+    flex-basis: 100%; /* Full width on mobile */
+    flex-direction: column; /* Stack items vertically */
+    padding: 10px;
+  }
+
+  .service__item__image {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .service__item__content {
+    width: 100%;
   }
 }
+.icon-button.table__button {
+  display: flex; /* Align the icon and text horizontally */
+  align-items: center; /* Center the text vertically relative to the icon */
+  justify-content: center; /* Center the items horizontally */
+  gap: 5px; /* Add some space between the icon and text */
+  transition: color 0.3s ease; /* Add a transition for a smooth color change */
+}
 
-.welcome a::before {
-  content: "➜ "
+.icon-button.table__button:hover {
+  color: #0c539f; /* Change color when hovered. Replace with the color you want */
+}
+
+.icon-button.table__button span {
+  padding-left: 5px;
+}
+
+
+.icon-button {
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.table__button {
+  margin-left: 10px;
 }
 
 .company-header {
@@ -217,6 +298,9 @@ a:focus-visible {
   padding: 0 0.5em;
   border-bottom: 1px solid var(--BORDER-COLOR);
 }
+.company-header h1{
+  color: white;
+}
 
 .company-header__container {
   display: flex;
@@ -225,9 +309,9 @@ a:focus-visible {
   align-items: center;
 }
 
-.company-header__container--small {
+/* .company-header__container--small {
   max-width: 800px;
-}
+} */
 
 .company-header__nav {
   display: flex;
@@ -236,16 +320,21 @@ a:focus-visible {
   gap: 0.5em;
 }
 
-.company-container {
-  padding: 0.75em 0.5em 0.5em;
-  flex-grow: 1;
+.company-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* This will ensure that the layout covers the full height of the viewport */
 }
 
+.company-container {
+  flex: 1 0 auto;  /* This will push the footer to the bottom */
+  margin-top: 30px;
+}
 .company-footer {
   font-size: 1rem;
   position: sticky;
+  width: 100%;
   bottom: 0;
-  z-index: 1000;
   background-color: #083D77;
   padding: 0.5em;
   border-top: 1px solid var(--BORDER-COLOR);
@@ -271,24 +360,55 @@ a:focus-visible {
   padding: 0 0.5em;
   border-bottom: 1px solid var(--BORDER-COLOR);
 }
+.home-header h1{
+  color: white;
+}
+
+.icon-button.logout-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: white;
+  margin-right: 30px; /* Add margin to the left of the logout button */
+  white-space: nowrap; /* Keep the text from breaking into multiple lines */
+  overflow: hidden; /* Hide any overflowing text */
+  text-overflow: ellipsis; /* Add an ellipsis (...) when the text overflows */
+}
 
 .home-header__container {
   display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
+  flex-direction: row;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
-.home-header__container--small {
-  max-width: 800px;
+.home-header__title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .home-header__nav {
   display: flex;
-  flex-flow: row nowrap;
+  flex-direction: row;
+  align-items: center;
   justify-content: flex-end;
-  gap: 0.5em;
 }
+
+/* Responsive styling for screens with width less than 600px */
+@media (max-width: 600px) {
+  .home-header__title {
+    font-size: 18px; /* Decrease font size for smaller screens */
+  }
+  .icon-button.logout-button {
+    gap: 2px; /* Decrease gap for smaller screens */
+    font-size: 14px; /* Decrease font size for smaller screens */
+  }
+}
+
 
 .home-container {
   padding: 0.75em 0.5em 0.5em;
@@ -298,6 +418,7 @@ a:focus-visible {
 .home-footer {
   font-size: 1rem;
   position: sticky;
+  width: 100%;
   bottom: 0;
   z-index: 1;
   background-color: #083D77;
@@ -484,7 +605,7 @@ tr {
   background-color: #45a049;
 }
 
-input.inputBox{
+/* input.inputBox{
   font-size: 22px;
   padding: 5px 8px 4px 8px;
   border-radius: 3px;
@@ -499,7 +620,77 @@ input.inputBox{
   margin-top: 50px;
   border: 1px solid #ccc;
   z-index: 999;
+} */
+.calendarWrap {
+  margin-top: 20vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2em;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  background-color: #ffffff;
 }
+
+.inputBox {
+  width: 100%;
+  padding: 1em;
+  font-size: 1.2em;
+  margin-bottom: 2em;
+  border: none;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  border-radius: 5px;
+}
+
+.calendarElement {
+  width: 100%;
+}
+
+.timeWrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2em;
+  width: 100%;
+  margin-top: 2em;
+}
+
+.timeWrap label {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.2em;
+}
+
+.timeWrap input {
+  width: 100%;
+  padding: 1em;
+  font-size: 1.2em;
+  border: none;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  border-radius: 5px;
+  margin-top: 0.5em;
+}
+
+.timeWrap button {
+  grid-column: span 2;
+  padding: 1em;
+  font-size: 1.2em;
+  color: #ffffff;
+  background-color: #105bab;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 5px;
+  margin-top: 1em;
+}
+
+.timeWrap button:hover {
+  background-color: #083D77;
+}
+
 
 .loading-container {
   position: absolute;
@@ -576,15 +767,6 @@ input.inputBox{
   font-weight: bold;
 }
 
-.checkout-button {
-  background-color: #083D77;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
 .selected {
   background-color: #E0E0E0;
 }
@@ -592,13 +774,32 @@ input.inputBox{
 .selected .checkout-button {
   visibility: visible;
 }
+@media (max-width: 768px) {
+  .calendarElement {
+    width: 100%; 
+    font-size: 1em; 
+  }
 
-.checkout-button {
-  visibility: hidden;
+  .time-slots-container {
+    grid-template-columns: repeat(2, 1fr); /* change the number of columns to 2 */
+  }
+
+  .slot-container {
+    padding: 0.2rem; /* decrease padding */
+  }
+
+  .slot-item {
+    margin: 0.2rem; /* decrease margin */
+    font-size: 0.9rem; /* decrease font size */
+  }
+  .checkout-button{
+    width: 120px;
+  }
 }
+
 .appointments-table {
   width: 100%;
-  margin-top: 20px;
+  margin-top: 200px;
 }
 
 .appointments-table__heading {
@@ -647,6 +848,7 @@ input.inputBox{
   width: 80%; 
   border-collapse: collapse;
   margin: 20px auto; 
+  margin-top: 50px;
 }
 
 .appointments-table__header, .appointments-table__row {
@@ -684,6 +886,38 @@ input.inputBox{
 .appointments-table__button:hover {
   color: #007bff;
 }
+@media (max-width: 768px) {
+  .appointments-table {
+    width: 100%;
+    margin-top: 20px;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .appointments-table__cell {
+    padding: 5px; /* decrease padding */
+    font-size: 0.8em; /* decrease font size */
+  }
+
+  .appointments-table__button {
+    padding: 3px; /* decrease padding */
+  }
+
+  .filter-form {
+    flex-direction: column; /* stack filter inputs vertically */
+    align-items: stretch;
+  }
+
+  .filter-form label {
+    margin-bottom: 10px; /* add space between vertically stacked inputs */
+  }
+
+  .modal-content {
+    width: 80%; /* increase width to make modal larger on small screens */
+  }
+}
+
 .modal {
   position: fixed;
   z-index: 1;
@@ -739,3 +973,252 @@ input.inputBox{
 .table--users .icon-button:hover {
   color: #0056b3;
 }
+.aboutContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+  padding: 20px;
+  margin-left: 150px;
+  margin-right: 150px;
+}
+
+.aboutBox {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.aboutBox.aboutHeader {
+  grid-column: span 2; /* Make the header span two columns */
+  align-items: center;
+}
+.aboutBox.aboutHeader h2{
+  text-align: center;
+}
+.aboutBox h2{
+  padding-bottom: 15px;
+}
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  line-height: 20px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: all 0.3s ease-out;
+  cursor: pointer;
+}
+
+.button-login {
+  background-color: #007BFF;
+  color: #ffffff;
+  margin-right: 20px;
+}
+
+.button-login:hover {
+  background-color: #0056b3;
+  margin-left: 20px;
+}
+
+.button-register {
+  background-color: #28a745;
+  color: #ffffff;
+}
+
+.button-register:hover {
+  background-color: #1e7e34;
+}
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1em;
+}
+
+.buttonContainer, .grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
+  gap: 10%;
+  align-items: center;
+  justify-items: center;
+  width: 100%;
+}
+
+.grid-item, .serviceButton2, .appointmentButton2 {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-size: 1.5em;
+  color: white;
+  background-color: #105bab;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  min-height: 200px; 
+  flex: 1; 
+  box-sizing: border-box;
+  border-radius: 20px;
+  width: 80%;
+}
+
+
+
+
+.grid-item:hover, .serviceButton:hover, .appointmentButton:hover {
+  background-color: #083D77;
+}
+
+.grid-item a, .serviceButton a, .appointmentButton a {
+  text-decoration: none;
+  color: inherit;
+  margin-left: 10px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* If there are 5 items, make the third item span 2 columns */
+.grid-container :nth-child(3):last-child {
+  grid-column: span 2;
+}
+
+/* For the FontAwesome icons */
+.faWrench, .faCalendarAlt {
+  margin-right: 5px;
+}
+
+.span-two-columns {
+  grid-column: span 2;
+}
+.serviceButton, .appointmentButton {
+  width: 45%; /* Adjust this value as needed */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-size: 1.5em; /* Increase font size */
+  color: white;
+  background-color: #105bab; /* Change as needed */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  height: 80vh; /* Make buttons take up the full available height */
+  box-sizing: border-box;
+  border-radius: 20px;
+}
+.buttonContainer_user {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-grow: 1;
+}
+.buttonContainer a {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.span-two-columns-always {
+  grid-column: span 2;
+}
+@media (max-width: 768px) {
+
+  .aboutContainer {
+    grid-template-columns: 1fr;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .aboutBox.aboutHeader {
+    grid-column: span 1; 
+  }
+
+  .buttonContainer, .grid-container {
+    grid-template-columns: 1fr;
+    gap: 2em;
+  }
+
+  .grid-item, .serviceButton2, .appointmentButton2 {
+    min-height: 120px;
+    padding: 10px;
+    font-size: 1.2em;
+  }
+
+  .serviceButton, .appointmentButton {
+    width: 100%; 
+    padding: 15px;
+    font-size: 1.2em; 
+    height: auto; 
+  }
+
+  .buttonContainer_user {
+    flex-direction: column;
+  }
+}
+
+.rdrMonths {
+  display: flex;
+  position: relative;
+  margin: auto;
+}
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  background-color: #ffffff;
+  color: #333;
+  font-family: Arial, sans-serif;
+}
+
+.errorTitle {
+  margin-bottom: 20px;
+}
+
+.retryButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #008CBA;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.retryButton:hover {
+  background-color: #007B9A;
+}
+@media (max-width: 768px) {
+  .rbc-calendar {
+    width: 100%;
+  }
+
+  .rbc-btn-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .rbc-toolbar label {
+    font-size: 0.8em;
+  }
+
+  .rbc-event {
+    font-size: 0.7em;
+    padding: 5px;
+  }
+}
+
+
+
